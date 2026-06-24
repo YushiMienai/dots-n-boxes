@@ -1,0 +1,11 @@
+/* Для отключения скролла на мобильных при игре */
+.touch-none {
+    touch-action: none;
+}
+
+.game-canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}

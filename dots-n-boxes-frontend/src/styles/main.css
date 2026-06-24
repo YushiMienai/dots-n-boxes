@@ -1,0 +1,22 @@
+/* Кастомные стили для игры */
+@layer components {
+    .game-canvas {
+        @apply border border-gray-300 rounded-lg bg-white shadow-lg;
+    }
+
+    .color-option {
+        @apply w-10 h-10 border-3 border-transparent rounded-lg cursor-pointer transition-transform duration-200;
+    }
+
+    .color-option.selected {
+        @apply border-gray-800 scale-110;
+    }
+
+    .reset-button {
+        @apply px-6 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors duration-200;
+    }
+
+    .logout-button {
+        @apply px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-200;
+    }
+}

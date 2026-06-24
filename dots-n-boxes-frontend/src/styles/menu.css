@@ -1,0 +1,194 @@
+/* menu.css */
+
+/* ===== ОСНОВНЫЕ КОМПОНЕНТЫ ===== */
+.menu-nav {
+    @apply bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 right-0 z-50;
+}
+
+.menu-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.menu-content {
+    @apply flex justify-between items-center h-16;
+}
+
+/* ===== ЛОГОТИП ===== */
+.menu-logo {
+    @apply flex items-center gap-2 transition-opacity hover:opacity-80;
+}
+
+.menu-logo-icon {
+    @apply bg-sky-600 w-9 h-9 rounded-xl flex items-center justify-center;
+}
+
+.menu-logo-icon-svg {
+    @apply w-5 h-5 text-white;
+}
+
+.menu-logo-text {
+    @apply font-bold text-gray-900 text-lg;
+}
+
+/* ===== ПРАВАЯ ЧАСТЬ ===== */
+.menu-actions {
+    @apply flex items-center gap-3;
+}
+
+.menu-desktop {
+    @apply hidden md:flex items-center gap-4;
+}
+
+/* ===== БЕЙДЖ ИГРОКА ===== */
+.menu-player-badge {
+    @apply flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg;
+}
+
+.menu-player-status {
+    @apply w-2 h-2 bg-green-500 rounded-full;
+}
+
+.menu-player-name {
+    @apply text-sm text-gray-600;
+}
+
+/* ===== ОБЩИЕ КЛАССЫ ДЛЯ КНОПОК ===== */
+
+@utility menu-btn-base {
+    @apply flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg transition-all duration-200 disabled:opacity-50;
+}
+
+.menu-btn-leave {
+    @apply menu-btn-base text-orange-600 hover:text-orange-700 hover:bg-orange-50;
+}
+
+.menu-btn-link {
+    @apply menu-btn-base text-gray-600 hover:text-gray-900 hover:bg-gray-100;
+}
+
+.menu-btn-logout {
+    @apply menu-btn-base text-red-600 hover:text-red-700 hover:bg-red-50;
+}
+
+/* ===== ИКОНКИ ===== */
+.menu-icon-sm {
+    @apply w-4 h-4;
+}
+
+/* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
+.menu-mobile-wrapper {
+    @apply md:hidden relative;
+}
+
+.menu-mobile-btn {
+    @apply p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200;
+}
+
+.menu-mobile-icon {
+    @apply w-6 h-6;
+}
+
+/* ===== ОВЕРЛЕЙ ===== */
+.menu-overlay {
+    @apply fixed inset-0 bg-black/50 z-40 md:hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.menu-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ===== БОКОВОЕ МЕНЮ ===== */
+.menu-sidebar {
+    @apply fixed top-0 right-0 h-full w-64 bg-white shadow-xl z-50 md:hidden;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.menu-sidebar.open {
+    transform: translateX(0);
+}
+
+.menu-sidebar-content {
+    @apply flex flex-col h-full;
+}
+
+/* Заголовок */
+.menu-sidebar-header {
+    @apply flex items-center justify-between p-4 border-b border-gray-200;
+}
+
+.menu-sidebar-title {
+    @apply font-semibold text-gray-900;
+}
+
+.menu-sidebar-close {
+    @apply p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200;
+}
+
+.menu-sidebar-close-icon {
+    @apply w-5 h-5;
+}
+
+/* Тело */
+.menu-sidebar-body {
+    @apply flex-1 overflow-y-auto p-4;
+}
+
+/* Профиль */
+.menu-sidebar-profile {
+    @apply mb-4 pb-4 border-b border-gray-200;
+}
+
+.menu-sidebar-profile-content {
+    @apply flex items-center gap-2;
+}
+
+.menu-sidebar-avatar {
+    @apply w-8 h-8 bg-sky-600 rounded-full flex items-center justify-center;
+}
+
+.menu-sidebar-avatar-icon {
+    @apply w-4 h-4 text-white;
+}
+
+.menu-sidebar-profile-name {
+    @apply font-medium text-gray-900;
+}
+
+.menu-sidebar-profile-status {
+    @apply text-xs text-green-600 flex items-center gap-1;
+}
+
+.menu-sidebar-status-dot {
+    @apply w-1.5 h-1.5 bg-green-500 rounded-full;
+}
+
+/* ===== ОБЩИЕ КЛАССЫ ДЛЯ ПУНКТОВ МЕНЮ ===== */
+@utility menu-sidebar-item-base {
+    @apply w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-200;
+}
+
+.menu-sidebar-item {
+    @apply menu-sidebar-item-base text-gray-700 hover:bg-gray-100;
+}
+
+.menu-sidebar-item-leave {
+    @apply menu-sidebar-item-base text-orange-600 hover:bg-orange-50;
+}
+
+.menu-sidebar-icon {
+    @apply w-5 h-5;
+}
+
+/* Подвал */
+.menu-sidebar-footer {
+    @apply p-4 border-t border-gray-200;
+}
+
+.menu-sidebar-item-logout {
+    @apply menu-sidebar-item-base text-red-600 hover:bg-red-50 disabled:opacity-50;
+}

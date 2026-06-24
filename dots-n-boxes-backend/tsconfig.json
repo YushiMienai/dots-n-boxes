@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "paths": {
+      "@entities": ["./entities"],
+      "@errors": ["./errors"],
+      "@dto": ["./dto"],
+      "@types": ["./types"],
+      "@managers": ["./game/managers"],
+      "@core": ["./game/core"],
+      "@database": ["./database"],
+      "@services": ["./services"],
+      "@routes": ["./routes"],
+      "@app": ["./app"],
+      "@hooks": ["./hooks"],
+      "@constants": ["./constants"],
+    }
+  },
+  "include": ["src/**/*", "src/types/fastify.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}
