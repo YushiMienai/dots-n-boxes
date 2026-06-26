@@ -3,12 +3,8 @@ export interface IAuthRequest {
   password: string
 }
 
-export interface IRegisterRequest extends IAuthRequest{
-  confirmPassword: string
-}
-
 export interface IAuthResponse {
-  token: string
+  accessToken: string
   name: string
 }
 

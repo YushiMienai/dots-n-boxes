@@ -2,6 +2,7 @@ import {Link} from 'react-router-dom'
 import {useRegister} from '@hooks'
 import {IRegisterRequest} from '@types'
 import {AuthLayout, Form} from '@components'
+import {getErrorMessage} from '@utils'
 
 export const Register = () => {
   const regMutation = useRegister()
@@ -46,7 +47,7 @@ export const Register = () => {
         <Form.Password />
         {regMutation.isError && (
           <div className='errorBlock'>
-            <p className='errorText'>{regMutation.error?.message}</p>
+            <p className='errorText'>{getErrorMessage(regMutation.error)}</p>
           </div>
         )}
         <Form.Submit

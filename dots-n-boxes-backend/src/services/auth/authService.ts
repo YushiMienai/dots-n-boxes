@@ -1,26 +1,27 @@
 import * as bcrypt from 'bcrypt'
 import {Repository} from 'typeorm'
 import {PlayerEntity} from '@entities'
-import {AuthRequestDTO, RegisterRequestDTO} from '@dto'
+import {AuthRequestDTO} from '@dto'
 import {UserExistsError, InvalidCredentialsError} from '@errors'
+import {IAuthRequest} from '@types'
 
 
 export class AuthService {
   constructor(private playerRepo: Repository<PlayerEntity>) {}
 
-  async register(registerDto: RegisterRequestDTO): Promise<PlayerEntity> {
+  async register(data: IAuthRequest): Promise<PlayerEntity> {
     const player = await this.playerRepo.findOne({
-      where: [{name: registerDto.name}]
+      where: [{name: data.name}]
     })
 
     if (player) {
       throw new UserExistsError(player.name)
     }
 
-    const hashedPassword = await bcrypt.hash(registerDto.password, 12)
+    const hashedPassword = await bcrypt.hash(data.password, 12)
 
     return await this.playerRepo.save({
-      name: registerDto.name,
+      name: data.name,
       password: hashedPassword
     })
   }

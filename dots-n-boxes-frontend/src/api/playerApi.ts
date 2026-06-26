@@ -6,7 +6,7 @@ const playerEndpoints = API_CONFIG.endpoints.player
 
 export const playerApi = {
   enterRoom: (id: string) => apiClient.put(playerEndpoints.room.enter(id)),
-  leaveRoom: () => apiClient.put(playerEndpoints.room.leave),
+  leaveRoom: () => apiClient.delete(playerEndpoints.room.leave),
   getMe: (): Promise<IPlayer> => apiClient.get(playerEndpoints.me),
   updateMe: (data: IPlayer) => apiClient.put(playerEndpoints.update, data),
   getCurrentRoom: async (): Promise<string | null> => {

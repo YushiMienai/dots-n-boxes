@@ -24,7 +24,7 @@ interface IFormSubmit {
 }
 
 export const Form = <T extends FieldValues>({children, title, onSubmit}: IFormProps<T>) => {
-  const methods = useForm<T>();
+  const methods = useForm<T>()
 
   if (methods.formState.isSubmitting) {
     return (

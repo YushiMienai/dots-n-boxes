@@ -2,6 +2,7 @@ import {Link} from 'react-router-dom'
 import {useRegister} from '@hooks'
 import {IRegisterRequest} from '@types'
 import {Form} from '@components'
+import {getErrorMessage} from '@utils'
 
 export const RegisterForm = () => {
   const regMutation = useRegister()
@@ -32,11 +33,11 @@ export const RegisterForm = () => {
               }
             }}
           />
-          <Form.Password />
+          <Form.Password />1
           {regMutation.isError && (
             <div className='bg-red-50 border border-red-200 rounded-lg p-3'>
               <p className='text-red-800 text-sm'>
-                {regMutation.error.message}
+                {getErrorMessage(regMutation.error)}
               </p>
             </div>
           )}

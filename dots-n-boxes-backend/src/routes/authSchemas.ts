@@ -10,7 +10,7 @@ export const authSchemas = {
           maxLength: 20,
           pattern: '^[a-zA-Z0-9_]+$'
         },
-        password: {type: 'string', minLength: 7}
+        password: {type: 'string', minLength: 6, maxLength: 100}
       }
     },
     response: {

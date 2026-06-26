@@ -1,10 +1,10 @@
 import {authSchemas} from './authSchemas'
 import {FastifyInstance, FastifyReply, FastifyRequest} from 'fastify'
-import {AuthService, JwtService, PlayerService, TokenService} from '@services'
-import {AuthRequestDTO, AuthResponseDTO, RegisterRequestDTO} from '@dto'
 import {getCookie} from 'utils'
+import {AuthService, JwtService, PlayerService, TokenService} from '@services'
+import {AuthRequestDTO, AuthResponseDTO} from '@dto'
 import {InvalidTokenError} from '@errors'
-import console from 'console'
+import {IAuthRequest, IAuthResponse} from '@types'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -16,10 +16,10 @@ declare module 'fastify' {
 }
 
 export async function authRoutes(fastify: FastifyInstance) {
-  fastify.post<{Body: RegisterRequestDTO, Reply: AuthResponseDTO}>('/register',
+  fastify.post<{Body: IAuthRequest, Reply: IAuthResponse}>('/register',
     {schema: authSchemas.register},
-    async (request: FastifyRequest, reply: FastifyReply): Promise<AuthResponseDTO> => {
-      const {name, password} = request.body as RegisterRequestDTO
+    async (request, reply: FastifyReply): Promise<AuthResponseDTO> => {
+      const {name, password} = request.body
       const player = await fastify.authService.register({name, password})
       const {accessToken, refreshToken} = await fastify.tokenService.generate(player, {
         userAgent: request.headers['user-agent'],
@@ -55,7 +55,6 @@ export async function authRoutes(fastify: FastifyInstance) {
 
     if (refreshToken) {
       const foundToken = await fastify.tokenService.validateRefreshToken(refreshToken)
-      console.log(foundToken)
 
       if (foundToken) {
         await fastify.playerService.leaveRoom(foundToken.player.id)

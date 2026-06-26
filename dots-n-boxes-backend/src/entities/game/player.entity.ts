@@ -33,7 +33,7 @@ export class PlayerEntity implements IPlayer {
       id: this.id,
       name: this.name,
       isOnline: this.isOnline,
-      roomId: this.gameRoomId
+      gameRoomId: this.gameRoomId
     }
   }
 }

@@ -26,7 +26,7 @@ export interface IPlayer {
   id: string
   name: string
   isOnline: boolean
-  gameRoomId: boolean
+  gameRoomId: string | null
 }
 
 export interface IGameState {

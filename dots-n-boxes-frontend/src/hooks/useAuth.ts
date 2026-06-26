@@ -1,5 +1,5 @@
 import {useNavigate} from 'react-router-dom'
-import {useMutation, useQuery} from '@tanstack/react-query'
+import {useMutation} from '@tanstack/react-query'
 import {authApi} from '@api'
 import {useAuthStore} from '@stores'
 import {IAuthResponse} from '@types'
@@ -26,7 +26,7 @@ export const useRegister = () => {
     onSuccess: (data: IAuthResponse) => {
       loginStore(data.name, data.accessToken)
       navigate('/rooms')
-    },
+    }
   })
 }
 
