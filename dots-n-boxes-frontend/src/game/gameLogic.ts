@@ -78,6 +78,6 @@ export const resetGame = (gameState: IGameState, isMobile: boolean = false): IGa
   // Сохраняем игроков (если нужно сохранить историю)
   return {
     ...newGameState,
-    players: gameState.players.map(player => ({ ...player, score: 0 }))
+    players: gameState.players.map(player => ({...player, score: 0}))
   }
 }

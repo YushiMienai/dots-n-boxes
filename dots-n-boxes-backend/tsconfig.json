@@ -26,6 +26,8 @@
       "@app": ["./app"],
       "@hooks": ["./hooks"],
       "@constants": ["./constants"],
+      "@middleware": ["./middleware"],
+      "@schemas": ["./schemas"]
     }
   },
   "include": ["src/**/*", "src/types/fastify.d.ts"],

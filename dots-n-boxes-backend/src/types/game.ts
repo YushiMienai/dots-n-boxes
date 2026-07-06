@@ -37,17 +37,6 @@ export interface IGameState {
   verticalLines: ILine[]
   status: EGameStatus
 }
-
-export interface IGameRoom {
-  id: string
-  name: string
-  players: IPlayer[]
-  gameState: IGameState
-  maxPlayers: number
-  isPrivate: boolean
-  createdAt: Date
-}
-
 export interface IWSMessage {
   type: string
   payload: any

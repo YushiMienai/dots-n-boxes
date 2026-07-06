@@ -16,7 +16,7 @@ export const useCanvasEvents = ({
     if (!canvas) return
 
     canvas.addEventListener('click', onMouseClick)
-    canvas.addEventListener('touchstart', onTouchStart, { passive: false })
+    canvas.addEventListener('touchstart', onTouchStart, {passive: false})
 
     return () => {
       canvas.removeEventListener('click', onMouseClick)

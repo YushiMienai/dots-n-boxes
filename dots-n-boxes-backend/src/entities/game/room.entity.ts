@@ -1,11 +1,11 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, CreateDateColumn} from 'typeorm'
 import {PlayerEntity} from 'entities/game/player.entity'
 import {GameStateEntity} from 'entities/game/gameState.entity'
-import {IGameRoom, IGameState} from '@types'
+import {IGameState} from '@types'
 import {IPlayer} from 'types/game'
 
 @Entity('game_rooms')
-export class RoomEntity implements IGameRoom {
+export class RoomEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -35,16 +35,4 @@ export class RoomEntity implements IGameRoom {
 
   @CreateDateColumn({type: 'timestamptz'})
   createdAt: Date
-
-  toJSON(): IGameRoom {
-    return {
-      id: this.id,
-      name: this.name,
-      maxPlayers: this.maxPlayers,
-      isPrivate: this.isPrivate,
-      players: this.players,
-      gameState: this.gameState,
-      createdAt: this.createdAt
-    }
-  }
 }

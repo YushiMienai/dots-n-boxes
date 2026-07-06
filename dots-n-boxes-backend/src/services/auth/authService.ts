@@ -1,7 +1,6 @@
 import * as bcrypt from 'bcrypt'
 import {Repository} from 'typeorm'
 import {PlayerEntity} from '@entities'
-import {AuthRequestDTO} from '@dto'
 import {UserExistsError, InvalidCredentialsError} from '@errors'
 import {IAuthRequest} from '@types'
 
@@ -26,12 +25,12 @@ export class AuthService {
     })
   }
 
-  async login(authDto: AuthRequestDTO): Promise<PlayerEntity> {
+  async login(data: IAuthRequest): Promise<PlayerEntity> {
     const player = await this.playerRepo.findOne({
-      where: {name: authDto.name},
+      where: {name: data.name},
       select: ['id', 'name', 'password']
     })
-    const isPasswordValid = player ? await bcrypt.compare(authDto.password, player.password) : false
+    const isPasswordValid = player ? await bcrypt.compare(data.password, player.password) : false
 
     if (!player || !isPasswordValid) {
       throw new InvalidCredentialsError()

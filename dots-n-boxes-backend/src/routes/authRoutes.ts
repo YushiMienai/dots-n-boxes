@@ -1,9 +1,8 @@
-import {authSchemas} from './authSchemas'
-import {FastifyInstance, FastifyReply, FastifyRequest} from 'fastify'
+import {FastifyInstance} from 'fastify'
 import {getCookie} from 'utils'
 import {AuthService, JwtService, PlayerService, TokenService} from '@services'
-import {AuthRequestDTO, AuthResponseDTO} from '@dto'
 import {InvalidTokenError} from '@errors'
+import {authSchemas} from '@schemas'
 import {IAuthRequest, IAuthResponse} from '@types'
 
 declare module 'fastify' {
@@ -18,7 +17,7 @@ declare module 'fastify' {
 export async function authRoutes(fastify: FastifyInstance) {
   fastify.post<{Body: IAuthRequest, Reply: IAuthResponse}>('/register',
     {schema: authSchemas.register},
-    async (request, reply: FastifyReply): Promise<AuthResponseDTO> => {
+    async (request, reply): Promise<IAuthResponse> => {
       const {name, password} = request.body
       const player = await fastify.authService.register({name, password})
       const {accessToken, refreshToken} = await fastify.tokenService.generate(player, {
@@ -33,10 +32,10 @@ export async function authRoutes(fastify: FastifyInstance) {
     }
   )
 
-  fastify.post('/login',
+  fastify.post<{Body: IAuthRequest, Reply: IAuthResponse}>('/login',
     {schema: authSchemas.login},
-    async (request: FastifyRequest, reply: FastifyReply): Promise<AuthResponseDTO> => {
-      const {name, password} = request.body as AuthRequestDTO
+    async (request, reply): Promise<IAuthResponse> => {
+      const {name, password} = request.body
       const player = await fastify.authService.login({name, password})
       const {accessToken, refreshToken} = await fastify.tokenService.generate(player, {
         userAgent: request.headers['user-agent'],
@@ -71,6 +70,7 @@ export async function authRoutes(fastify: FastifyInstance) {
   fastify.post('/refresh',
     async (request, reply) => {
       const refreshToken = getCookie(request, 'refreshToken')
+      console.log(refreshToken)
 
       if (!refreshToken) {
         throw new InvalidTokenError()

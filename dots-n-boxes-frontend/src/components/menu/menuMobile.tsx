@@ -11,10 +11,10 @@ interface MenuMobileProps {
 }
 
 export const MenuMobile = ({
-                             name,
-                             children,
-                             menuItems,
-                           }: MenuMobileProps) => {
+  name,
+  children,
+  menuItems,
+}: MenuMobileProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 

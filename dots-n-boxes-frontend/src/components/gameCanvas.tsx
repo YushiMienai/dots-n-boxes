@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react'
-import { Stage, Layer, Line } from 'react-konva'
+import {useRef, useEffect} from 'react'
+import {Stage, Layer, Line} from 'react-konva'
 import Konva from 'konva'
 import {IGameState, IPlayer} from '@types'
 
@@ -93,7 +93,7 @@ export const GameCanvas = () => {
     >
       <Layer>
         {/* Фон клеток */}
-        {Array.from({ length: BOARD_SIZE * BOARD_SIZE }).map((_, i) => {
+        {Array.from({length: BOARD_SIZE * BOARD_SIZE}).map((_, i) => {
           const row = Math.floor(i / BOARD_SIZE)
           const col = i % BOARD_SIZE
           return (

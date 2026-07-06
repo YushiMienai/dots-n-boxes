@@ -2,7 +2,7 @@ import {FastifyInstance} from 'fastify'
 import {Server} from 'socket.io'
 import {PlayerService} from '@services'
 import {verifyJWT} from '@hooks'
-import {enterRoomSchema, leaveRoomSchema} from './playerSchemas'
+import {enterRoomSchema, leaveRoomSchema} from '../schemas/playerSchemas'
 
 declare module 'fastify' {
   interface FastifyInstance {

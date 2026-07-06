@@ -38,7 +38,7 @@ export const drawCells = (ctx: CanvasRenderingContext2D, gameState: IGameState):
 }
 
 export const renderGame = (ctx: CanvasRenderingContext2D, gameState: IGameState): void => {
-  const { width, height } = ctx.canvas
+  const {width, height} = ctx.canvas
   clearCanvas(ctx, width, height)
   drawLines(ctx, gameState)
   drawCells(ctx, gameState)

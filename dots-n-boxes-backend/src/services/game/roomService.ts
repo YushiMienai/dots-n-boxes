@@ -1,13 +1,13 @@
 import {Equal, FindOptionsWhere} from 'typeorm'
 import {AppDataSource} from '@database'
 import {RoomEntity} from '@entities'
-import {RoomListRequestDTO, RoomRequestDTO, RoomResponseDTO} from '@dto'
 import {RoomNotFound} from '@errors'
+import {CreateRoomBody, RoomSearch} from '@schemas'
 
 export class RoomService {
   private roomRepository = AppDataSource.getRepository(RoomEntity)
 
-  async getList(params: RoomListRequestDTO): Promise<RoomResponseDTO[]> {
+  async getList(params: RoomSearch): Promise<RoomEntity[]> {
     const whereConditions: FindOptionsWhere<RoomEntity> = {}
     if (params.name) {
       whereConditions.name = Equal(params.name)
@@ -15,13 +15,13 @@ export class RoomService {
     const [rooms, total] = await this.roomRepository.findAndCount({
       where: whereConditions,
       order: {createdAt: 'DESC'},
-      select: ['id', 'name']
+      select: ['id', 'name', 'isPrivate', 'maxPlayers', 'isGameStarted', 'createdAt'],
     })
 
-    return rooms as RoomResponseDTO[]
+    return rooms
   }
 
-  async getRoom(id: string): Promise<RoomResponseDTO> {
+  async getRoom(id: string): Promise<RoomEntity> {
     const room = await this.roomRepository.findOne({
       where: [{id}],
       select: ['name']
@@ -31,10 +31,10 @@ export class RoomService {
       throw new RoomNotFound()
     }
 
-    return room as RoomResponseDTO
+    return room
   }
 
-  async createRoom(room: RoomRequestDTO): Promise<RoomResponseDTO> {
+  async createRoom(room: CreateRoomBody): Promise<RoomEntity> {
     return await this.roomRepository.save(room)
   }
 }

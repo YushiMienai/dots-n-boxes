@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom'
 import {useRoomsList, useLogout, useEnterRoom} from '@hooks'
 import {CreateRoomModal} from './createRoomModal'
 import {Loader} from '@components'
-import {usePlayerStore} from "@stores"
+import {usePlayerStore} from '@stores'
 
 export const RoomList = () => {
   const {data: rooms, isLoading} = useRoomsList()
