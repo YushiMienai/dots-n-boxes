@@ -1,5 +1,5 @@
-import { Server } from 'socket.io'
-import { FastifyInstance } from 'fastify'
+import {Server} from 'socket.io'
+import {FastifyInstance} from 'fastify'
 import {FRONTEND_URL} from '@constants'
 
 export function setupSocket(fastify: FastifyInstance) {

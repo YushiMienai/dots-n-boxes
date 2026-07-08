@@ -15,7 +15,7 @@ export class AddIsPrivateToGameRooms20251119005912 implements MigrationInterface
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP INDEX idx_game_rooms_is_private`)
+    await queryRunner.query('DROP INDEX idx_game_rooms_is_private')
 
     await queryRunner.query(`
             ALTER TABLE game_rooms 

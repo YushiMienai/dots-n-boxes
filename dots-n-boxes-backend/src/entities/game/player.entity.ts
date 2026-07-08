@@ -5,28 +5,28 @@ import {IPlayer} from '@types'
 @Entity('players')
 export class PlayerEntity implements IPlayer {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+    id: string
 
   @Column({type: 'varchar', length: 50})
-  name: string
+    name: string
 
   @Column({type: 'varchar', length: 100, select: false})
-  password: string
+    password: string
 
   @Column({type: 'boolean', default: true})
-  isOnline: boolean
+    isOnline: boolean
 
   @ManyToOne(() => RoomEntity, room => room.players, {
     nullable: true,
     onDelete: 'SET NULL'
   })
-  gameRoom: RoomEntity | null
+    gameRoom: RoomEntity | null
 
   @Column({type: 'uuid'})
-  gameRoomId: string | null
+    gameRoomId: string | null
 
   @CreateDateColumn({type: 'timestamptz'})
-  joinedAt: Date
+    joinedAt: Date
 
   toJSON(): IPlayer {
     return {

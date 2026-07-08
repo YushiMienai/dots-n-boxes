@@ -23,7 +23,7 @@ export class PlayerService {
 
       // 2. Проверяем комнату с загрузкой игроков
       const room = await roomRepo.findOne({
-        where: { id: roomId },
+        where: {id: roomId},
         relations: ['players']  // 👈 загружаем игроков для подсчета
       })
 
@@ -51,7 +51,7 @@ export class PlayerService {
 
       // 1. Находим игрока с его комнатой
       const player = await playerRepo.findOne({
-        where: { id: playerId },
+        where: {id: playerId},
         relations: ['gameRoom']
       })
 
@@ -69,7 +69,7 @@ export class PlayerService {
 
       // 3. Проверяем, остались ли игроки в комнате
       const roomWithPlayers = await roomRepo.findOne({
-        where: { id: roomId },
+        where: {id: roomId},
         relations: ['players']
       })
 
@@ -85,7 +85,7 @@ export class PlayerService {
 
   async getCurrentRoom(playerId: string): Promise<string | null> {
     const player = await this.playerRepository.findOne({
-      where: { id: playerId },
+      where: {id: playerId},
       relations: ['gameRoom']
     })
     return player?.gameRoom?.id || null

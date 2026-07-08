@@ -39,7 +39,7 @@ export interface IGameState {
 }
 export interface IWSMessage {
   type: string
-  payload: any
+  payload: unknown
   roomId: string
   playerId?: string
 }

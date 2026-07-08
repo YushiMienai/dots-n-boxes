@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm'
+import {MigrationInterface, QueryRunner} from 'typeorm'
 
 export class AddIsGameFinishedToGameRooms1700000000004 implements MigrationInterface {
   name = 'AddIsGameFinishedToGameRooms1700000000004'
@@ -25,8 +25,8 @@ export class AddIsGameFinishedToGameRooms1700000000004 implements MigrationInter
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Удаляем индексы
-    await queryRunner.query(`DROP INDEX idx_game_rooms_active_public`)
-    await queryRunner.query(`DROP INDEX idx_game_rooms_is_game_finished`)
+    await queryRunner.query('DROP INDEX idx_game_rooms_active_public')
+    await queryRunner.query('DROP INDEX idx_game_rooms_is_game_finished')
 
     // Удаляем колонку
     await queryRunner.query(`

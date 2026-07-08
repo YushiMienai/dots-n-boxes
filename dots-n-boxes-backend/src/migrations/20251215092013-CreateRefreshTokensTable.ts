@@ -18,13 +18,13 @@ export class CreateRefreshTokensTable20251215092013 implements MigrationInterfac
       )
     `)
 
-    await queryRunner.query(`CREATE INDEX idx_token_hash ON refresh_tokens USING HASH(token_hash)`)
-    await queryRunner.query(`CREATE INDEX idx_token_player ON refresh_tokens(player_id)`)
-    await queryRunner.query(`CREATE INDEX idx_expires ON refresh_tokens(expires_at)`)
-    await queryRunner.query(`CREATE INDEX idx_active ON refresh_tokens(player_id, expires_at) WHERE NOT is_revoked`)
+    await queryRunner.query('CREATE INDEX idx_token_hash ON refresh_tokens USING HASH(token_hash)')
+    await queryRunner.query('CREATE INDEX idx_token_player ON refresh_tokens(player_id)')
+    await queryRunner.query('CREATE INDEX idx_expires ON refresh_tokens(expires_at)')
+    await queryRunner.query('CREATE INDEX idx_active ON refresh_tokens(player_id, expires_at) WHERE NOT is_revoked')
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE refresh_tokens`)
+    await queryRunner.query('DROP TABLE refresh_tokens')
   }
 }

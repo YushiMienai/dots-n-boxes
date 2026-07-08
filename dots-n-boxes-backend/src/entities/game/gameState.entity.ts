@@ -7,38 +7,38 @@ import {RoomEntity} from './room.entity'
 @Entity('game_states')
 export class GameStateEntity implements IGameState {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+    id: string
 
   @Column({type: 'jsonb'})
-  horizontalLines: ILine[]
+    horizontalLines: ILine[]
 
   @Column({type: 'jsonb'})
-  verticalLines: ILine[]
+    verticalLines: ILine[]
 
   @Column({type: 'jsonb'})
-  cells: ICell[]
+    cells: ICell[]
 
   @Column({
     type: 'enum',
     enum: EGameStatus,
     default: EGameStatus.WAITING
   })
-  status: EGameStatus
+    status: EGameStatus
 
   @ManyToOne(() => PlayerEntity, {nullable: true})
   @Column({type: 'uuid', nullable: true})
-  activePlayerId: string
+    activePlayerId: string
 
   @ManyToOne(() => PlayerEntity, {nullable: true})
   @Column({type: 'uuid', nullable: true})
-  winnerId: string
+    winnerId: string
 
   @OneToOne(() => RoomEntity, gameRoom => gameRoom.gameState, {onDelete: 'CASCADE'})
   @JoinColumn()
-  gameRoom: RoomEntity
+    gameRoom: RoomEntity
 
   @Column({type: 'uuid'})
-  gameRoomId: string
+    gameRoomId: string
 
   toJSON(): IGameState {
     return {

@@ -5,33 +5,33 @@ import {PlayerEntity} from 'entities/game/player.entity'
 @Entity('refresh_tokens')
 export class RefreshTokenEntity implements IRefreshToken {
   @PrimaryGeneratedColumn('increment')
-  id: string
+    id: string
 
   @Column({type: 'varchar', length: 64, unique: true})
-  tokenHash: string
+    tokenHash: string
 
   @Column({type: 'uuid'})
-  playerId: string
+    playerId: string
 
   @ManyToOne(() => PlayerEntity)
   @JoinColumn({name: 'player_id'})
-  player: PlayerEntity
+    player: PlayerEntity
 
   @Column({type: 'text'})
-  userAgent: string
+    userAgent: string
 
   @Column({type: 'inet'})
-  ipAddress: string
+    ipAddress: string
 
   @Column({type: 'boolean', default: false})
-  isRevoked: boolean
+    isRevoked: boolean
 
   @CreateDateColumn({type: 'timestamptz'})
-  issuedAt: Date
+    issuedAt: Date
 
   @Column({type: 'timestamptz'})
-  expiresAt: Date
+    expiresAt: Date
 
   @Column({type: 'timestamptz'})
-  lastUsedAt: Date
+    lastUsedAt: Date
 }

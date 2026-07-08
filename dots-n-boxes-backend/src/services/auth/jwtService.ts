@@ -5,6 +5,6 @@ export class JwtService {
   constructor(private jwt: JWT) {}
 
   signAccessToken(player: PlayerEntity): string {
-    return this.jwt.sign({ id: player.id, name: player.name })
+    return this.jwt.sign({id: player.id, name: player.name})
   }
 }

@@ -49,15 +49,15 @@ export class CreateInitialTables20251113050253 implements MigrationInterface {
         `)
 
     // Создаем индексы для улучшения производительности
-    await queryRunner.query(`CREATE INDEX idx_players_game_room_id ON players(game_room_id)`)
-    await queryRunner.query(`CREATE INDEX idx_players_is_online ON players(is_online)`)
-    await queryRunner.query(`CREATE INDEX idx_game_rooms_is_game_started ON game_rooms(is_game_started)`)
+    await queryRunner.query('CREATE INDEX idx_players_game_room_id ON players(game_room_id)')
+    await queryRunner.query('CREATE INDEX idx_players_is_online ON players(is_online)')
+    await queryRunner.query('CREATE INDEX idx_game_rooms_is_game_started ON game_rooms(is_game_started)')
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Удаляем в обратном порядке (из-за foreign keys)
-    await queryRunner.query(`DROP TABLE game_states`)
-    await queryRunner.query(`DROP TABLE players`)
-    await queryRunner.query(`DROP TABLE game_rooms`)
+    await queryRunner.query('DROP TABLE game_states')
+    await queryRunner.query('DROP TABLE players')
+    await queryRunner.query('DROP TABLE game_rooms')
   }
 }
