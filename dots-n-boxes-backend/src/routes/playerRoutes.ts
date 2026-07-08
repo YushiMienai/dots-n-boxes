@@ -2,7 +2,8 @@ import {FastifyInstance} from 'fastify'
 import {Server} from 'socket.io'
 import {PlayerService} from '@services'
 import {verifyJWT} from '@hooks'
-import {enterRoomSchema, leaveRoomSchema} from '../schemas/playerSchemas'
+import {playerSchema} from '@schemas'
+import {validate} from '@middleware'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -22,7 +23,8 @@ export async function playerRoutes(fastify: FastifyInstance) {
   })
 
   // Вход в комнату
-  fastify.put<{Params: {id: string}}>('/player/room/:id', {schema: enterRoomSchema},
+  fastify.put<{Params: {id: string}}>('/player/room/:id',
+    {preHandler: validate(playerSchema.enter.params, 'params')},
     async (request) => {
       const player = request.player
       const roomId = request.params.id
@@ -38,7 +40,7 @@ export async function playerRoutes(fastify: FastifyInstance) {
   )
 
   // Выход из комнаты
-  fastify.delete('/player/room', {schema: leaveRoomSchema},
+  fastify.delete('/player/room',
     async (request) => {
       const player = request.player
 

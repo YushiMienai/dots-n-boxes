@@ -1,11 +1,9 @@
-export {authSchemas} from './authSchemas'
-export {enterRoomSchema, leaveRoomSchema} from './playerSchemas'
+export {authSchemas, AuthRequest, AuthResponse} from './authSchemas'
+export {playerSchema, PlayerResponse} from './playerSchemas'
 export {
-  RoomResponseSchema,
-  RoomParamsSchema,
-  RoomSearchSchema,
-  createRoomSchema,
+  roomSchemas,
+  roomResponseSchema,
   RoomSearch,
   RoomResponse,
-  CreateRoomBody
+  RoomRequest
 } from './roomSchemas'

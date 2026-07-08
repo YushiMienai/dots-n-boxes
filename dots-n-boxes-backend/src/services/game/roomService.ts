@@ -2,7 +2,7 @@ import {Equal, FindOptionsWhere} from 'typeorm'
 import {AppDataSource} from '@database'
 import {RoomEntity} from '@entities'
 import {RoomNotFound} from '@errors'
-import {CreateRoomBody, RoomSearch} from '@schemas'
+import {RoomRequest, RoomSearch} from '@schemas'
 
 export class RoomService {
   private roomRepository = AppDataSource.getRepository(RoomEntity)
@@ -24,7 +24,7 @@ export class RoomService {
   async getRoom(id: string): Promise<RoomEntity> {
     const room = await this.roomRepository.findOne({
       where: [{id}],
-      select: ['name']
+      select: ['id', 'name', 'isPrivate', 'maxPlayers', 'isGameStarted', 'createdAt']
     })
 
     if (!room) {
@@ -34,7 +34,7 @@ export class RoomService {
     return room
   }
 
-  async createRoom(room: CreateRoomBody): Promise<RoomEntity> {
+  async createRoom(room: RoomRequest): Promise<RoomEntity> {
     return await this.roomRepository.save(room)
   }
 }

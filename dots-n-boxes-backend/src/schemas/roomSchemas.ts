@@ -1,7 +1,14 @@
 import {z} from 'zod'
 
-export const RoomResponseSchema = z.object({
-  id: z.string(),
+// ===== Базовые схемы =====
+
+const errorSchema = z.object({
+  error: z.string(),
+  message: z.string().optional()
+})
+
+export const roomResponseSchema = z.object({
+  id: z.uuid(),
   name: z.string(),
   isPrivate: z.boolean(),
   maxPlayers: z.number(),
@@ -9,17 +16,20 @@ export const RoomResponseSchema = z.object({
   createdAt: z.date().transform(date => date.toISOString())
 })
 
-export const RoomParamsSchema = z.object({
-  id: z.uuid('Неверный формат ID')
-})
+// ===== Общие схемы для ответов =====
 
-export const RoomSearchSchema = z.object({
-  name: z.string().optional(),
-  maxPlayers: z.number().min(2).max(4).optional(),
-  isPrivate: z.boolean().optional()
-})
+const responses = {
+  success: roomResponseSchema,
+  badRequest: errorSchema,
+  notFound: errorSchema.extend({
+    resource: z.string().optional()
+  }),
+  conflict: errorSchema.extend({
+    existingUser: z.string().optional()
+  })
+}
 
-export const createRoomSchema = z.object({
+const roomBody = z.object({
   name: z.string()
     .min(3, 'Название должно содержать минимум 3 символа')
     .max(50, 'Название должно содержать максимум 50 символов'),
@@ -30,6 +40,68 @@ export const createRoomSchema = z.object({
   isPrivate: z.boolean().default(false)
 })
 
-export type RoomSearch = z.infer<typeof RoomSearchSchema>
-export type RoomResponse = z.infer<typeof RoomResponseSchema>
-export type CreateRoomBody = z.infer<typeof createRoomSchema>
+// ===== Схемы для эндпоинтов =====
+
+export const roomSchemas = {
+  getList: {
+    querystring: z.object({
+      name: z.string().optional(),
+      maxPlayers: z.number().min(2).max(4).optional(),
+      isPrivate: z.boolean().optional()
+    }),
+    response: {
+      200: z.array(roomResponseSchema),
+      400: responses.badRequest
+    }
+  },
+
+  getOne: {
+    params: z.object({
+      id: z.uuid('Неверный формат ID')
+    }),
+    response: {
+      200: roomResponseSchema,
+      400: responses.badRequest,
+      404: responses.notFound
+    }
+  },
+
+  create: {
+    body: roomBody,
+    response: {
+      201: roomResponseSchema,
+      400: responses.badRequest,
+      409: responses.conflict
+    }
+  },
+
+  update: {
+    params: z.object({
+      id: z.uuid('Неверный формат ID')
+    }),
+    body: roomBody,
+    response: {
+      200: roomResponseSchema,
+      400: responses.badRequest,
+      404: responses.notFound
+    }
+  },
+
+  delete: {
+    params: z.object({
+      id: z.uuid('Неверный формат ID')
+    }),
+    response: {
+      204: z.void(),
+      400: responses.badRequest,
+      404: responses.notFound
+    }
+  }
+}
+
+// ===== Типы =====
+
+export type RoomSearch = z.infer<typeof roomSchemas.getList.querystring>
+export type RoomRequest = z.infer<typeof roomBody>
+export type RoomResponse = z.infer<typeof roomResponseSchema>
+export type RoomParams = z.infer<typeof roomSchemas.getOne.params>

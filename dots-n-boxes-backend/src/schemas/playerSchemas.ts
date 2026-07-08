@@ -1,30 +1,32 @@
-export const enterRoomSchema = {
-  params: {
-    type: 'object',
-    required: ['id'],
-    properties: {
-      id: {type: 'string'}
+import {z} from 'zod'
+
+const successBody = z.object({
+  success: z.boolean(),
+  message: z.string()
+})
+
+const playerBody = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  isOnline: z.boolean(),
+  roomId: z.uuid()
+})
+
+export const playerSchema = {
+  enter: {
+    params: z.object({
+      id: z.uuid('Неверный формат ID')
+    }),
+    response: {
+      200: successBody
     }
   },
-  response: {
-    200: {
-      type: 'object',
-      properties: {
-        success: {type: 'boolean'},
-        message: {type: 'string'}
-      }
+
+  leave: {
+    response: {
+      200: successBody
     }
   }
 }
 
-export const leaveRoomSchema = {
-  response: {
-    200: {
-      type: 'object',
-      properties: {
-        success: {type: 'boolean'},
-        message: {type: 'string'}
-      }
-    }
-  }
-}
+export type PlayerResponse = z.infer<typeof playerBody>

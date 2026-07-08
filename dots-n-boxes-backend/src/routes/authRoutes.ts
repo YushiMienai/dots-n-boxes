@@ -2,8 +2,8 @@ import {FastifyInstance} from 'fastify'
 import {getCookie} from 'utils'
 import {AuthService, JwtService, PlayerService, TokenService} from '@services'
 import {InvalidTokenError} from '@errors'
-import {authSchemas} from '@schemas'
-import {IAuthRequest, IAuthResponse} from '@types'
+import {AuthRequest, AuthResponse, authSchemas} from '@schemas'
+import {validate} from '@middleware'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -15,9 +15,9 @@ declare module 'fastify' {
 }
 
 export async function authRoutes(fastify: FastifyInstance) {
-  fastify.post<{Body: IAuthRequest, Reply: IAuthResponse}>('/register',
-    {schema: authSchemas.register},
-    async (request, reply): Promise<IAuthResponse> => {
+  fastify.post<{Body: AuthRequest, Reply: AuthResponse}>('/register',
+    {preHandler: validate(authSchemas.register.body, 'body')},
+    async (request, reply): Promise<AuthResponse> => {
       const {name, password} = request.body
       const player = await fastify.authService.register({name, password})
       const {accessToken, refreshToken} = await fastify.tokenService.generate(player, {
@@ -32,16 +32,15 @@ export async function authRoutes(fastify: FastifyInstance) {
     }
   )
 
-  fastify.post<{Body: IAuthRequest, Reply: IAuthResponse}>('/login',
-    {schema: authSchemas.login},
-    async (request, reply): Promise<IAuthResponse> => {
+  fastify.post<{Body: AuthRequest, Reply: AuthResponse}>('/login',
+    {preHandler: validate(authSchemas.login.body, 'body')},
+    async (request, reply): Promise<AuthResponse> => {
       const {name, password} = request.body
       const player = await fastify.authService.login({name, password})
       const {accessToken, refreshToken} = await fastify.tokenService.generate(player, {
         userAgent: request.headers['user-agent'],
         ipAddress: request.ip
       })
-      reply.code(200)
       reply.header('Set-Cookie',
         `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=604800; Secure; SameSite=None`
       )
@@ -68,9 +67,8 @@ export async function authRoutes(fastify: FastifyInstance) {
   })
 
   fastify.post('/refresh',
-    async (request, reply) => {
+    async (request) => {
       const refreshToken = getCookie(request, 'refreshToken')
-      console.log(refreshToken)
 
       if (!refreshToken) {
         throw new InvalidTokenError()
