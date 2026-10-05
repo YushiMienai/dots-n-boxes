@@ -1,6 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne} from 'typeorm'
-import {IGameState, ILine, ICell} from '@types'
-import {EGameStatus} from 'types/enum'
+import {IGameState, ILine, ICell, EGameStatus} from '@types'
 import {PlayerEntity} from './player.entity'
 import {RoomEntity} from './room.entity'
 

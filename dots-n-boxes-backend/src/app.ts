@@ -1,14 +1,13 @@
 import Fastify, {FastifyInstance} from 'fastify'
 import cors from '@fastify/cors'
-import fastifyJwt from '@fastify/jwt'
 import fastifyCookie from '@fastify/cookie'
 import {AppDataSource, initializeDatabase} from '@database'
-import {config} from 'config'
+import {config} from './config'
 import {authRoutes, roomRoutes, playerRoutes} from '@routes'
 import {PlayerEntity, RefreshTokenEntity} from '@entities'
 import {AuthService, JwtService, PlayerService, TokenService} from '@services'
 import {FRONTEND_URL} from '@constants'
-import {setupSocket} from 'socket'
+import {setupSocket} from './socket'
 
 const fastify = Fastify({
   logger: true,
@@ -16,12 +15,6 @@ const fastify = Fastify({
 })
 
 export const createApp = async () => {
-  await fastify.register(fastifyJwt, {
-    secret: process.env.JWT_SECRET!,
-    sign: {
-      expiresIn: process.env.JWT_EXPIRES_IN || '15m'
-    }
-  })
 
   await fastify.register(fastifyCookie, {secret: process.env.COOKIE_SECRET})
 
@@ -31,7 +24,7 @@ export const createApp = async () => {
     credentials: true
   })
 
-  const jwtService = new JwtService(fastify.jwt)
+  const jwtService = new JwtService()
   fastify.decorate('jwtService', jwtService)
 
   const tokenRepo = AppDataSource.getRepository(RefreshTokenEntity)

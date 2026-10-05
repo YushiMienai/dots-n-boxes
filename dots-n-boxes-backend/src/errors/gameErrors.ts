@@ -1,4 +1,4 @@
-import {AppError} from 'errors/appErrors'
+import {AppError} from './appErrors'
 
 export class RoomNotFound extends AppError {
   constructor() {

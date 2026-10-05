@@ -14,7 +14,7 @@ export class PlayerService {
       // 1. Проверяем игрока с загрузкой комнаты
       const currentPlayer = await playerRepo.findOne({
         where: {id: playerId},
-        relations: ['gameRoom']  // 👈 загружаем комнату
+        relations: {gameRoom: true}  // 👈 загружаем комнату
       })
 
       if (currentPlayer?.gameRoom) {
@@ -24,7 +24,7 @@ export class PlayerService {
       // 2. Проверяем комнату с загрузкой игроков
       const room = await roomRepo.findOne({
         where: {id: roomId},
-        relations: ['players']  // 👈 загружаем игроков для подсчета
+        relations: {players: true}  // 👈 загружаем игроков для подсчета
       })
 
       if (!room) {
@@ -52,14 +52,14 @@ export class PlayerService {
       // 1. Находим игрока с его комнатой
       const player = await playerRepo.findOne({
         where: {id: playerId},
-        relations: ['gameRoom']
+        select: {gameRoomId: true}
       })
 
-      if (!player?.gameRoom) {
+      if (!player?.gameRoomId) {
         return
       }
 
-      const roomId = player.gameRoom.id
+      const roomId = player.gameRoomId
 
       // 2. Убираем игрока из комнаты
       await playerRepo.update(playerId, {
@@ -68,13 +68,12 @@ export class PlayerService {
       })
 
       // 3. Проверяем, остались ли игроки в комнате
-      const roomWithPlayers = await roomRepo.findOne({
-        where: {id: roomId},
-        relations: ['players']
+      const playersCount = await playerRepo.count({
+        where: {gameRoomId: roomId}
       })
 
       // 4. Если комната опустела - сбрасываем состояние
-      if (roomWithPlayers && roomWithPlayers.players.length === 0) {
+      if (playersCount === 0) {
         await roomRepo.update(roomId, {
           isGameStarted: false,
           isGameFinished: false
@@ -86,15 +85,15 @@ export class PlayerService {
   async getCurrentRoom(playerId: string): Promise<string | null> {
     const player = await this.playerRepository.findOne({
       where: {id: playerId},
-      relations: ['gameRoom']
+      select: {gameRoomId: true}
     })
-    return player?.gameRoom?.id || null
+    return player?.gameRoomId || null
   }
 
   async getPlayersInRoom(roomId: string): Promise<PlayerEntity[]> {
     return this.playerRepository.find({
       where: {gameRoom: {id: roomId}},
-      select: ['id', 'name', 'isOnline']  // только нужные поля
+      select: {id: true, name: true, isOnline: true}  // только нужные поля
     })
   }
 }

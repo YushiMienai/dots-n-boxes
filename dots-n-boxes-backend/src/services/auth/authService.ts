@@ -28,7 +28,7 @@ export class AuthService {
   async login(data: IAuthRequest): Promise<PlayerEntity> {
     const player = await this.playerRepo.findOne({
       where: {name: data.name},
-      select: ['id', 'name', 'password']
+      select: {id: true, name: true, password: true}
     })
     const isPasswordValid = player ? await bcrypt.compare(data.password, player.password) : false
 

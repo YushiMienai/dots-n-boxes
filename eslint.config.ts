@@ -57,7 +57,13 @@ export default [
       '@typescript-eslint/no-unused-vars': 'warn',
       'no-unused-vars': 'off',
       'no-undef': 'off',
-      'indent': ['warn', 2, {'SwitchCase': 1}],
+      'indent': ['warn', 2, {
+        'SwitchCase': 1,
+        'ignoredNodes': [
+          'PropertyDefinition[decorators]',
+          'PropertyDefinition[decorators] > Decorator'
+        ]
+      }],
       'block-spacing': ['warn', 'never'],
       'object-curly-spacing': ['warn', 'never'],
       'array-bracket-spacing': ['warn', 'never'],

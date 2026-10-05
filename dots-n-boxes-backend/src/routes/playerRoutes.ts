@@ -1,9 +1,10 @@
 import {FastifyInstance} from 'fastify'
 import {Server} from 'socket.io'
-import {PlayerService} from '@services'
+import {PlayerService, RoomService} from '@services'
 import {verifyJWT} from '@hooks'
 import {playerSchema} from '@schemas'
 import {validate} from '@middleware'
+import {EAccessLevel} from '@types'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -13,6 +14,7 @@ declare module 'fastify' {
 
 export async function playerRoutes(fastify: FastifyInstance) {
   const playerService = new PlayerService()
+  const roomService = new RoomService()
   fastify.addHook('preHandler', verifyJWT)
 
   fastify.get('/player/room', async (request) => {
@@ -23,16 +25,24 @@ export async function playerRoutes(fastify: FastifyInstance) {
   })
 
   // Вход в комнату
-  fastify.put<{Params: {id: string}}>('/player/room/:id',
+  fastify.put<{Params: {id: string}, Body: {password?: string}}>('/player/room/:id',
     {preHandler: validate(playerSchema.enter.params, 'params')},
     async (request) => {
       const player = request.player
-      const roomId = request.params.id
+      const {id: roomId} = request.params
+      const {password} = request.body
 
       if (player) {
-        await playerService.enterRoom(player.id, roomId)
-        fastify.io.to(`room:${roomId}`).emit('player-joined', {id: player.id, name: player.name})
-        return {success: true, message: 'Entered room successfully'}
+        const room = await roomService.getRoomForEntry(roomId)
+        if (room.accessLevel === EAccessLevel.PASSWORD && room.password === password
+          || room.accessLevel !== EAccessLevel.PASSWORD) {
+          await playerService.enterRoom(player.id, roomId)
+          fastify.io.to(`room:${roomId}`).emit('player-joined', {id: player.id, name: player.name})
+          return {success: true, message: 'Entered room successfully'}
+        } else {
+          throw new Error('Forbidden to enter room')
+        }
+
       } else {
         throw new Error('Player not found')
       }

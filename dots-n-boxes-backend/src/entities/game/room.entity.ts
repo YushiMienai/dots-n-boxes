@@ -11,14 +11,14 @@ export class RoomEntity {
   @Column({type: 'varchar', length: 100})
   name: string
 
-  @Column({type: 'varchar', length: 100, default: ''})
-  password: string
+  @Column({type: 'varchar', length: 100, select: false, default: ''})
+  password: string | null
 
   @Column({type: 'int', default: 2})
   maxPlayers: number
 
-  @Column({type: 'boolean', default: false})
-  isPrivate: boolean
+  @Column({type: 'text', default: 'public'})
+  accessLevel: string
 
   @Column({type: 'boolean', default: false})
   isGameStarted: boolean

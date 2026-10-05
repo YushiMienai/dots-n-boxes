@@ -1,5 +1,5 @@
 import {FastifyInstance} from 'fastify'
-import {getCookie} from 'utils'
+import {getCookie} from '@utils'
 import {AuthService, JwtService, PlayerService, TokenService} from '@services'
 import {InvalidTokenError} from '@errors'
 import {AuthRequest, AuthResponse, authSchemas} from '@schemas'

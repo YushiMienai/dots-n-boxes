@@ -1,7 +1,10 @@
+import {EAccessLevel} from './enums'
+
 export interface IRoomRequest {
   name: string,
   maxPlayers: number
-  password: string
+  password?: string
+  accessLevel: EAccessLevel
 }
 
 export interface IRoomResponse {
@@ -9,4 +12,5 @@ export interface IRoomResponse {
   name: string
   playersCount: number
   maxPlayers: number
+  accessLevel: EAccessLevel
 }

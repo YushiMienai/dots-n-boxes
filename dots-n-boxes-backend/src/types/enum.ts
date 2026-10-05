@@ -16,3 +16,10 @@ export enum EGameStatus {
   IN_PROGRESS = 'IN_PROGRESS',
   FINISHED = 'FINISHED'
 }
+
+export enum EAccessLevel {
+  PUBLIC = 'public',
+  PASSWORD = 'password',
+  FRIENDS_ONLY = 'friends_only',
+  INVITE_ONLY = 'invite_only',
+}

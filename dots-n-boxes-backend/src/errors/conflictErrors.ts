@@ -1,4 +1,4 @@
-import {AppError} from 'errors/appErrors'
+import {AppError} from './appErrors'
 
 class ConflictError extends AppError {
   constructor(message: string = 'Resource conflict', code: string = 'CONFLICT_ERROR') {

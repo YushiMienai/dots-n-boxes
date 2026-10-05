@@ -5,7 +5,6 @@ import {usePlayerStore} from '@stores'
 import {IRoomResponse} from '@types'
 
 
-
 export const useRoomsList = () => {
   return useQuery<IRoomResponse[]>({
     queryKey: ['rooms'],

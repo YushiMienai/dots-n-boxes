@@ -1,6 +1,6 @@
 import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm'
-import {IRefreshToken} from 'types/auth'
-import {PlayerEntity} from 'entities/game/player.entity'
+import {IRefreshToken} from '@types'
+import {PlayerEntity} from './game/player.entity'
 
 @Entity('refresh_tokens')
 export class RefreshTokenEntity implements IRefreshToken {

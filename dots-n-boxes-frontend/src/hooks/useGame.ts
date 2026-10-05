@@ -34,7 +34,7 @@ export const useGame = () => {
   }, [handleCanvasInteraction, getCanvas, deviceInfo.isMobile])
 
   const handleReset = useCallback(() => {
-    resetGame()
+    resetGame()//10158601
   }, [resetGame])
 
   return {

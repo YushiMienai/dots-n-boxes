@@ -1,5 +1,5 @@
 import {DataSourceOptions} from 'typeorm'
-import {SnakeNamingStrategy} from 'typeorm-naming-strategies'
+import {SnakeNamingStrategy} from 'typeorm-naming-strategy'
 import path from 'path'
 
 interface Config {
@@ -18,11 +18,11 @@ export const config: Config = {
     username: process.env.DB_USERNAME || 'postgres',
     password: process.env.DB_PASSWORD || 'password',
     database: process.env.DB_NAME || 'dots_and_boxes',
-    synchronize: process.env.NODE_ENV !== 'production',
+    synchronize: false,
     logging: process.env.NODE_ENV !== 'production',
     entities: [path.join(__dirname, 'entities/**/*.entity.ts')],
     migrations: [path.join(__dirname, 'migrations/**/*.ts')],
-    migrationsRun: false,
+    migrationsRun: true,
     namingStrategy: new SnakeNamingStrategy()
   },
   server: {

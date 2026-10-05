@@ -8,8 +8,8 @@ export const useEnterRoom = () => {
   const navigate = useNavigate()
 
   return useMutation({
-    mutationFn: (roomId: string) => playerApi.enterRoom(roomId),
-    onSuccess: (_, roomId: string) => {
+    mutationFn: ({roomId, password}: { roomId: string; password?: string }) => playerApi.enterRoom(roomId, password),
+    onSuccess: (_, {roomId}) => {
       enterRoom(roomId)
       navigate(`/rooms/${roomId}`)
     }

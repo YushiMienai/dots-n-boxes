@@ -9,7 +9,7 @@ interface PlayerState {
 
 interface PlayerActions {
   update: (id: string, name: string) => void
-  enterRoom: (roomId: string) => void
+  enterRoom: (roomId: string, password?: string) => void
   leaveRoom: () => void
 }
 

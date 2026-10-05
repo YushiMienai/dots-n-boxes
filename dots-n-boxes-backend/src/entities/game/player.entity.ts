@@ -22,7 +22,7 @@ export class PlayerEntity implements IPlayer {
   })
   gameRoom: RoomEntity | null
 
-  @Column({type: 'uuid'})
+  @Column({type: 'uuid', nullable: true})
   gameRoomId: string | null
 
   @CreateDateColumn({type: 'timestamptz'})

@@ -1,4 +1,3 @@
-import {startServer} from '@app'
 import fs from 'fs'
 import path from 'path'
 
@@ -11,6 +10,8 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
   require('tsconfig-paths/register')
 }
+
+import {startServer} from '@app'
 
 // Обработка graceful shutdown
 process.on('SIGINT', () => {

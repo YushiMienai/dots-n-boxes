@@ -1,8 +1,7 @@
-import {FastifyInstance} from 'fastify'
 import {MoreThan, Repository} from 'typeorm'
 import {PlayerEntity, RefreshTokenEntity} from '@entities'
-import {CryptoService} from 'services/auth/cryptoService'
-import {JwtService} from 'services/auth/jwtService'
+import {CryptoService} from './cryptoService'
+import {JwtService} from './jwtService'
 
 interface Metadata {
   userAgent?: string
@@ -16,7 +15,7 @@ export class TokenService {
   ) {}
 
   async generate(player: PlayerEntity, metadata: Metadata): Promise<{accessToken: string, refreshToken: string}> {
-    const accessToken = this.jwtService.signAccessToken(player)
+    const accessToken = await this.jwtService.signAccessToken(player)
 
     const refreshToken = CryptoService.generateRandomToken()
     const hashedRefreshToken = CryptoService.hashToken(refreshToken)
@@ -42,9 +41,20 @@ export class TokenService {
     const tokenRecord = await this.refreshTokenRepo.findOne({
       where: {
         tokenHash: hashedRefreshToken,
-        isRevoked: false
+        isRevoked: false,
+        expiresAt: MoreThan(new Date())
       },
-      relations: ['player']
+      relations: {player: true},
+      select: {
+        id: true,
+        playerId: true,
+        isRevoked: true,
+        expiresAt: true,
+        player: {
+          id: true,
+          name: true,
+        },
+      }
     })
 
     if (!tokenRecord) {
@@ -57,11 +67,10 @@ export class TokenService {
   async revokeRefreshToken(refreshToken: string | undefined): Promise<void> {
     if (refreshToken) {
       const tokenHash = CryptoService.hashToken(refreshToken)
-      const foundToken = await this.refreshTokenRepo.findOne({where: {tokenHash}})
-      if (foundToken) {
-        foundToken.isRevoked = true
-        await this.refreshTokenRepo.save(foundToken)
-      }
+      await this.refreshTokenRepo.update(
+        {tokenHash},
+        {isRevoked: true}
+      )
     }
   }
 }

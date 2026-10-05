@@ -14,3 +14,10 @@ export enum EPlayerColor {
   LIGHT_SEA_GREEN = '#20B2AA',
   BURLY_WOOD = '#DEB887'
 }
+
+export enum EAccessLevel {
+  PUBLIC = 'public',
+  PASSWORD = 'password',
+  FRIENDS_ONLY = 'friends_only',
+  INVITE_ONLY = 'invite_only',
+}

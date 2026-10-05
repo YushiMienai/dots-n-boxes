@@ -1,8 +1,8 @@
-/*
+import 'fastify'
+import {JWTPayload} from '@hooks' // Или откуда-то, где определен тип
+
 declare module 'fastify' {
-  interface FastifyInstance {
-    authService: import('@services').AuthService
-    tokenService: import('@services').TokenService
-    jwtService: import('@services').JwtService
+  interface FastifyRequest {
+    player?: JWTPayload
   }
-}*/
+}
