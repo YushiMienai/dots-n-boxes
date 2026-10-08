@@ -16,7 +16,7 @@ export const Login = () => {
       links={
         <>
           <p className='linkText'>
-            Нет аккаунта?
+            Нет аккаунта?&nbsp;
             <Link to='/register' className='linkPrimary'>
               Зарегистрироваться
             </Link>

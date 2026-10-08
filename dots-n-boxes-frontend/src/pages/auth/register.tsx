@@ -16,19 +16,13 @@ export const Register = () => {
       links={
         <>
           <p className='linkText'>Есть аккаунт? </p>
-          <Link
-            to='/login'
-            className='linkPrimary'
-          >
+          <Link to='/login' className='linkPrimary'>
             Войдите
           </Link>
         </>
       }
     >
-      <h2 className='title'>
-        Регистрация
-      </h2>
-      <Form<IRegisterRequest> onSubmit={onSubmit}>
+      <Form<IRegisterRequest> title='Регистрация' onSubmit={onSubmit}>
         <Form.Input
           name='name'
           placeholder='Введите имя пользователя'

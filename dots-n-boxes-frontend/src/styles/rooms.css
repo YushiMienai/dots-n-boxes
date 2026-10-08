@@ -2,41 +2,7 @@
 
 /* ===== КОНТЕЙНЕР СТРАНИЦЫ ===== */
 .rooms-page {
-    @apply min-h-screen bg-gradient-to-br from-sky-50 to-indigo-100;
-}
-
-/* ===== ХЕДЕР ===== */
-.rooms-header {
-    @apply bg-white shadow-sm border-b border-gray-200;
-}
-
-.rooms-header-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4;
-}
-
-.rooms-header-content {
-    @apply flex items-center justify-between;
-}
-
-/* Логотип/иконка в хедере */
-.rooms-header-logo {
-    @apply bg-sky-600 w-10 h-10 rounded-full flex items-center justify-center;
-}
-
-.rooms-header-logo-icon {
-    @apply w-5 h-5 text-white;
-}
-
-.rooms-header-title {
-    @apply text-2xl font-bold text-gray-900;
-}
-
-.rooms-header-subtitle {
-    @apply text-sm text-gray-600;
-}
-
-.rooms-header-actions {
-    @apply flex items-center gap-3;
+    @apply min-h-screen bg-linear-to-br from-sky-50 to-indigo-100 pt-16;
 }
 
 /* ===== ОБЩИЙ КОНТЕЙНЕР КОНТЕНТА ===== */
@@ -44,13 +10,21 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
 }
 
-/* ===== КНОПКА "ВЫЙТИ" (иконка) ===== */
-.rooms-logout-btn {
-    @apply p-2 text-gray-500 hover:text-gray-700 transition-colors;
+/* ===== ШАПКА СТРАНИЦЫ (заголовок + кнопка) ===== */
+.rooms-header {
+    @apply flex items-center justify-between mb-6;
 }
 
-.rooms-logout-icon {
-    @apply w-5 h-5;
+.rooms-header-content {
+    @apply flex flex-col;
+}
+
+.rooms-header-title {
+    @apply text-2xl font-bold text-gray-900;
+}
+
+.rooms-header-subtitle {
+    @apply text-sm text-gray-600 mt-1;
 }
 
 /* ===== ПУСТОЕ СОСТОЯНИЕ ===== */
@@ -71,7 +45,7 @@
 }
 
 .rooms-empty-text {
-    @apply text-gray-600 mb-6;
+    @apply text-gray-600;
 }
 
 /* ===== СЕТКА КОМНАТ ===== */
@@ -81,7 +55,8 @@
 
 /* ===== КАРТОЧКА КОМНАТЫ ===== */
 .room-card {
-    @apply bg-white rounded-2xl shadow-xl p-6 hover:shadow-lg transition-shadow border border-gray-100;
+    @apply flex flex-col bg-white rounded-2xl shadow-xl p-6
+    hover:shadow-lg transition-shadow border border-gray-100;
 }
 
 .room-card-header {
@@ -123,4 +98,14 @@
 
 .room-card-progress-bar {
     @apply h-full bg-sky-600 rounded-full transition-all;
+}
+
+/* Иконка «замок» у password-комнаты */
+.room-card-lock {
+    @apply text-gray-400;
+}
+
+/* Инпут пароля в карточке */
+.room-card-password {
+    @apply px-3 py-2 text-sm mb-3;
 }

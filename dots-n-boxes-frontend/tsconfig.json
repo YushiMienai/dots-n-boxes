@@ -30,7 +30,8 @@
       "@config": ["./config"],
       "@game": ["./game"],
       "@styles": ["./styles/index.css"],
-      "@svg": ["./types/svg"]
+      "@svg": ["./types/svg"],
+      "@constants": ["./types/constants"]
     },
     "allowSyntheticDefaultImports": true,
     "types": ["vitest/globals", "@testing-library/jest-dom"]

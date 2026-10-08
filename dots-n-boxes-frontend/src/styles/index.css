@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
-@import "./auth.css";
+@import "./form.css";
 @import "./menu.css";
 @import "./main.css";
 @import "./rooms.css";
 @import "./buttons.css";
+@import "./modals.css";

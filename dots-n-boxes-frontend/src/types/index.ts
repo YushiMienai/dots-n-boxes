@@ -1,5 +1,5 @@
 export type {ICoordinate, ICell, ILine, IGameState} from './game'
-export {DetectionMethod, EPlayerColor} from './enums'
+export {DetectionMethod, EPlayerColor, EAccessLevel} from './enums'
 export type {IAuthResponse, ILoginRequest, IRegisterRequest} from './auth'
 export type {IRoomResponse, IRoomRequest} from './rooms'
 export type {IPlayer} from './players'

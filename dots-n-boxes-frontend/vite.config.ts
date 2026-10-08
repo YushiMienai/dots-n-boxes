@@ -23,7 +23,8 @@ export default defineConfig({
       '@config': path.resolve(__dirname, './src/config'),
       '@game': path.resolve(__dirname, './src/game'),
       '@styles': path.resolve(__dirname, './src/styles/index.css'),
-      '@svg': path.resolve(__dirname, './src/types/svg')
+      '@svg': path.resolve(__dirname, './src/types/svg'),
+      '@constants': path.resolve(__dirname, './src/types/constants')
     }
   },
   test: {
