@@ -86,7 +86,7 @@ export async function authRoutes(fastify: FastifyInstance) {
         throw new Error('No player found')
       }
 
-      const accessToken = fastify.jwtService.signAccessToken(player)
+      const accessToken = await fastify.jwtService.signAccessToken(player)
 
       return {accessToken}
     }

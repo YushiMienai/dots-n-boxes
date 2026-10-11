@@ -18,7 +18,7 @@ export default defineConfig({
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@pages': path.resolve(__dirname, './src/pages'),
       '@utils': path.resolve(__dirname, './src/utils'),
-      '@router': path.resolve(__dirname, './src/router'),
+      '@router': path.resolve(__dirname, './src/router.tsx'),
       '@stores': path.resolve(__dirname, './src/stores'),
       '@config': path.resolve(__dirname, './src/config'),
       '@game': path.resolve(__dirname, './src/game'),

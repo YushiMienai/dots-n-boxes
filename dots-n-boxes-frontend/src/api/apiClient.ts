@@ -42,7 +42,6 @@ const processQueue = (error: Error | null, token: string | null = null) => {
 apiClient.interceptors.request.use(
   (config: CustomAxiosRequestConfig) => {
     const accessToken = useAuthStore.getState().accessToken
-    console.log(accessToken)
 
     if (accessToken && config.headers) {
       config.headers.Authorization = `Bearer ${accessToken}`

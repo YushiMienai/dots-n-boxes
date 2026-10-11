@@ -1,7 +1,7 @@
-import {createBrowserRouter} from 'react-router-dom'
+import {createBrowserRouter, Navigate} from 'react-router-dom'
 import {ProtectedRoute} from '@components'
 import {Login, GameBoard, Register, RoomList} from '@pages'
-import {App} from '../App'
+import {App} from './App'
 
 export const router = createBrowserRouter([
   {path: '/login', element: <Login />},
@@ -13,10 +13,9 @@ export const router = createBrowserRouter([
         <App />
       </ProtectedRoute>,
     children: [
-      {index: true, element: <RoomList />},
-      {path: '/rooms', element: <RoomList />},
-      {path: '/rooms/:id', element: <GameBoard />},
-      {path: '/logout'}
+      {index: true, element: <Navigate to='/rooms' replace />},
+      {path: 'rooms', element: <RoomList />},
+      {path: 'rooms/:id', element: <GameBoard />}
     ]
   }
 ])

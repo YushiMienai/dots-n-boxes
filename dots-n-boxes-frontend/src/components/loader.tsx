@@ -1,6 +1,6 @@
 import {LOADER_SPIN} from '@svg'
 
-export const Loader = ({title}: {title: string}) => {
+export const Loader = ({title}: {title?: string}) => {
 
   return (
     <div className='loadingContainer'>
