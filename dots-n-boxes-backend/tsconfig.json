@@ -29,7 +29,8 @@
       "@constants": ["./src/constants"],
       "@middleware": ["./src/middleware"],
       "@utils": ["./src/utils"],
-      "@schemas": ["./src/schemas"]
+      "@schemas": ["./src/schemas"],
+      "@plugins": ["./src/plugins"]
     }
   },
   "include": [

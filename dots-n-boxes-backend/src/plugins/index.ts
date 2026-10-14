@@ -1,0 +1,6 @@
+export {default as jwtPlugin} from './jwt'
+export {default as tokenPlugin} from './token'
+export {default as authPlugin} from './auth'
+export {default as playerPlugin} from './player'
+export {default as socketPlugin} from './socket'
+export {default as routesPlugin} from './routes'

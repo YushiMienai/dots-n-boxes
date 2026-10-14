@@ -1,20 +1,13 @@
 import Fastify, {FastifyInstance} from 'fastify'
 import cors from '@fastify/cors'
 import fastifyCookie from '@fastify/cookie'
-import {AppDataSource, initializeDatabase} from '@database'
-import {config} from './config'
-import {authRoutes, roomRoutes, playerRoutes} from '@routes'
-import {PlayerEntity, RefreshTokenEntity} from '@entities'
-import {AuthService, JwtService, PlayerService, TokenService} from '@services'
+import {initializeDatabase} from '@database'
+import {authPlugin, jwtPlugin, playerPlugin, routesPlugin, socketPlugin, tokenPlugin} from '@plugins'
 import {FRONTEND_URL} from '@constants'
-import {setupSocket} from './socket'
-
-const fastify = Fastify({
-  logger: true,
-  trustProxy: true
-})
+import {config} from './config'
 
 export const createApp = async () => {
+  const fastify = Fastify({logger: true, trustProxy: true})
 
   await fastify.register(fastifyCookie, {secret: process.env.COOKIE_SECRET})
 
@@ -24,45 +17,26 @@ export const createApp = async () => {
     credentials: true
   })
 
-  const jwtService = new JwtService()
-  fastify.decorate('jwtService', jwtService)
-
-  const tokenRepo = AppDataSource.getRepository(RefreshTokenEntity)
-  const tokenService = new TokenService(jwtService, tokenRepo)
-  const playerRepo = AppDataSource.getRepository(PlayerEntity)
-  const authService = new AuthService(playerRepo)
-  const playerService = new PlayerService()
-  fastify.decorate('authService', authService)
-  fastify.decorate('tokenService', tokenService)
-  fastify.decorate('playerService', playerService)
-
-  await fastify.register(authRoutes)
-  await fastify.register(roomRoutes)
-  await fastify.register(playerRoutes)
-
-  fastify.get('/health', async () => {
-    return {status: 'ok', timestamp: new Date().toISOString()}
-  })
-
-  const io = setupSocket(fastify as FastifyInstance)
-  fastify.decorate('io', io)
+  await fastify.register(jwtPlugin)
+  await fastify.register(tokenPlugin)
+  await fastify.register(authPlugin)
+  await fastify.register(playerPlugin)
+  await fastify.register(socketPlugin)
+  await fastify.register(routesPlugin)
 
   return fastify
 }
 
-export const startServer = async () => {
-  try {
-    await initializeDatabase()
-    const app = await createApp()
+export const startServer = async (): Promise<FastifyInstance> => {
+  await initializeDatabase()
+  const app = await createApp()
 
-    await app.listen({
-      port: config.server.port,
-      host: config.server.host
-    })
+  await app.listen({
+    port: config.server.port,
+    host: config.server.host
+  })
 
-    console.log(`Сервер запущен по адресу http://localhost:${config.server.port}`)
-  } catch (error) {
-    console.error('Ошибка запуска сервера:', error)
-    process.exit(1)
-  }
+  console.log(`Сервер запущен по адресу http://localhost:${config.server.port}`)
+
+  return app
 }

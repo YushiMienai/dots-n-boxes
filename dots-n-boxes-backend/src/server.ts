@@ -1,31 +1,24 @@
-import fs from 'fs'
-import path from 'path'
+import 'dotenv/config'  // ← первый импорт, до всего остального
+import 'tsconfig-paths/register'
+import {startServer} from '@app'
+import {AppDataSource} from '@database'
 
-const envPath = path.resolve(process.cwd(), '.env')
-console.log('Env file exists:', fs.existsSync(envPath))
-console.log('Env file path:', envPath)
+async function main() {
+  const app = await startServer()
 
-// Загружаем environment variables
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-  require('tsconfig-paths/register')
+  const shutdown = async (signal: string) => {
+    console.log(`Received ${signal}. Shutting down gracefully...`)
+    await new Promise<void>((resolve) => app.io.close(() => resolve()))
+    await app.close()
+    await AppDataSource.destroy()
+    process.exit(0)
+  }
+
+  process.on('SIGINT', () => shutdown('SIGINT'))
+  process.on('SIGTERM', () => shutdown('SIGTERM'))
 }
 
-import {startServer} from '@app'
-
-// Обработка graceful shutdown
-process.on('SIGINT', () => {
-  console.log('Received SIGINT. Shutting down gracefully...')
-  process.exit(0)
-})
-
-process.on('SIGTERM', () => {
-  console.log('Received SIGTERM. Shutting down gracefully...')
-  process.exit(0)
-})
-
-// Запускаем сервер
-startServer().catch(error => {
-  console.error('Ошибка запуска сервера:', error)
+main().catch((err) => {
+  console.error('Ошибка запуска сервера:', err)
   process.exit(1)
 })

@@ -1,16 +1,9 @@
 import {FastifyInstance} from 'fastify'
-import {Server} from 'socket.io'
 import {PlayerService, RoomService} from '@services'
 import {verifyJWT} from '@hooks'
 import {playerSchema} from '@schemas'
 import {validate} from '@middleware'
 import {EAccessLevel} from '@types'
-
-declare module 'fastify' {
-  interface FastifyInstance {
-    io: Server
-  }
-}
 
 export async function playerRoutes(fastify: FastifyInstance) {
   const playerService = new PlayerService()

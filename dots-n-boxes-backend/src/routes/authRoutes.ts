@@ -1,16 +1,13 @@
 import {FastifyInstance} from 'fastify'
 import {getCookie} from '@utils'
-import {AuthService, JwtService, PlayerService, TokenService} from '@services'
+import {PlayerService} from '@services'
 import {InvalidTokenError} from '@errors'
 import {AuthRequest, AuthResponse, authSchemas} from '@schemas'
 import {validate} from '@middleware'
 
 declare module 'fastify' {
   interface FastifyInstance {
-    authService: AuthService
-    tokenService: TokenService
     playerService: PlayerService
-    jwtService: JwtService
   }
 }
 
