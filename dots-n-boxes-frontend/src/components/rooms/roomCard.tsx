@@ -25,7 +25,7 @@ export const RoomCard = ({room, onClickEnter}: RoomCardProps) => {
           </span>
         )}
         <span className='room-card-badge'>
-          {room.playersCount}/{room.maxPlayers}
+          {room.currentPlayersCount}/{room.maxPlayers}
         </span>
       </div>
 
@@ -35,7 +35,7 @@ export const RoomCard = ({room, onClickEnter}: RoomCardProps) => {
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d={PLAYERS} />
           </svg>
           <span>
-            <span className='room-card-players-count'>{room.playersCount}</span>
+            <span className='room-card-players-count'>{room.currentPlayersCount}</span>
             <span className='room-card-players-max'> / {room.maxPlayers}</span> игроков
           </span>
         </div>
@@ -43,7 +43,7 @@ export const RoomCard = ({room, onClickEnter}: RoomCardProps) => {
         <div className='room-card-progress'>
           <div
             className='room-card-progress-bar'
-            style={{width: `${(room.playersCount / room.maxPlayers) * 100}%`}}
+            style={{width: `${(room.currentPlayersCount / room.maxPlayers) * 100}%`}}
           />
         </div>
       </div>

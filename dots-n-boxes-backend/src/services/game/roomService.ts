@@ -1,4 +1,3 @@
-import {Equal, FindOptionsWhere} from 'typeorm'
 import {AppDataSource} from '@database'
 import {RoomEntity} from '@entities'
 import {RoomNotFound} from '@errors'
@@ -17,17 +16,31 @@ export class RoomService {
   private roomRepository = AppDataSource.getRepository(RoomEntity)
 
   async getList(params: RoomSearch): Promise<RoomEntity[]> {
-    const whereConditions: FindOptionsWhere<RoomEntity> = {}
-    if (params.name) {
-      whereConditions.name = Equal(params.name)
-    }
-    const [rooms] = await this.roomRepository.findAndCount({
-      where: whereConditions,
-      order: {createdAt: 'DESC'},
-      select: ROOM_SELECT,
-    })
+    const qb = this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoin('room.players', 'player')
+      .addSelect([
+        'room.id',
+        'room.name',
+        'room.accessLevel',
+        'room.maxPlayers',
+        'room.isGameStarted',
+        'room.createdAt',
+      ])
+      .addSelect('COUNT(player.id)', 'currentPlayersCount')
+      .groupBy('room.id')
+      .orderBy('room.createdAt', 'DESC')
 
-    return rooms
+    if (params.name) {
+      qb.andWhere('room.name = :name', {name: params.name})
+    }
+
+    const {entities, raw} = await qb.getRawAndEntities()
+
+    return entities.map((room, index) => ({
+      ...room,
+      currentPlayersCount: Number(raw[index].currentPlayersCount),
+    }))
   }
 
   async getRoom(id: string): Promise<RoomEntity> {
@@ -57,7 +70,7 @@ export class RoomService {
         accessLevel: true,
         maxPlayers: true,
         isGameStarted: true,
-        password: true,   // ← только здесь
+        password: true
       },
     })
 

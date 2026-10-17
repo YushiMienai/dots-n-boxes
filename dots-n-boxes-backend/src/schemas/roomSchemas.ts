@@ -1,5 +1,5 @@
 import {z} from 'zod'
-import {EAccessLevel} from "@types";
+import {EAccessLevel} from '@types'
 
 // ===== Базовые схемы =====
 
@@ -14,6 +14,7 @@ export const roomResponseSchema = z.object({
   accessLevel: z.string(),
   maxPlayers: z.number(),
   isGameStarted: z.boolean(),
+  currentPlayersCount: z.number(),
   createdAt: z.date().transform(date => date.toISOString())
 })
 

@@ -12,5 +12,6 @@ export interface IRoomResponse {
   name: string
   playersCount: number
   maxPlayers: number
+  currentPlayersCount: number
   accessLevel: EAccessLevel
 }
