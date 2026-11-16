@@ -29,17 +29,19 @@ export interface IPlayer {
   gameRoomId: string | null
 }
 
+export interface IGamePlayer extends IPlayer {
+  socketId: string | null   // ← только для игры, не для БД
+  color?: string            // ← цвет фишки, если нужен
+}
+
 export interface IGameState {
+  roomId: string
+  players: IGamePlayer[]
+  maxPlayers: number
   activePlayerId: string | null
   winnerId: string | null
   cells: ICell[]
   horizontalLines: ILine[]
   verticalLines: ILine[]
   status: EGameStatus
-}
-export interface IWSMessage {
-  type: string
-  payload: unknown
-  roomId: string
-  playerId?: string
 }

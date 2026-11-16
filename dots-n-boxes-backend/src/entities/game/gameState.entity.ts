@@ -1,10 +1,10 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne} from 'typeorm'
-import {IGameState, ILine, ICell, EGameStatus} from '@types'
+import {ILine, ICell, EGameStatus} from '@types'
 import {PlayerEntity} from './player.entity'
 import {RoomEntity} from './room.entity'
 
 @Entity('game_states')
-export class GameStateEntity implements IGameState {
+export class GameStateEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 

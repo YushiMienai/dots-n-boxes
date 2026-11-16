@@ -1,0 +1,7 @@
+- **Room** — игровая комната (БД `game_rooms`). Содержит `maxPlayers`, `accessLevel`.
+- **IGameState** — состояние игры в памяти (`GameManager`). `players`, `cells`, `lines`.
+- **IPlayer** — игрок из БД (`players`). `id`, `name`, `gameRoomId`.
+- **IGamePlayer** — игрок в игре (`IGameState.players`). Расширяет `IPlayer`: `socketId`, `isOnline`, `color`, `score`.
+- **GameManager** — менеджер активных игр в памяти. `Map<roomId, IGameState>`.
+- **`game-state`** — socket-событие с полным `IGameState`.
+- **`player-joined`** — устаревшее, заменено на `game-state`.

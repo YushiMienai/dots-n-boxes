@@ -2,7 +2,7 @@ import Fastify, {FastifyInstance} from 'fastify'
 import cors from '@fastify/cors'
 import fastifyCookie from '@fastify/cookie'
 import {initializeDatabase} from '@database'
-import {authPlugin, jwtPlugin, playerPlugin, routesPlugin, socketPlugin, tokenPlugin} from '@plugins'
+import {authPlugin, gamePlugin, jwtPlugin, playerPlugin, routesPlugin, socketPlugin, tokenPlugin} from '@plugins'
 import {FRONTEND_URL} from '@constants'
 import {config} from './config'
 
@@ -21,6 +21,7 @@ export const createApp = async () => {
   await fastify.register(tokenPlugin)
   await fastify.register(authPlugin)
   await fastify.register(playerPlugin)
+  await fastify.register(gamePlugin)
   await fastify.register(socketPlugin)
   await fastify.register(routesPlugin)
 

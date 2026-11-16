@@ -1,43 +1,54 @@
 import {useEffect, useState} from 'react'
-import {io, Socket} from 'socket.io-client'
-import {API_CONFIG} from '@config'
-import {usePlayerStore, useRoomStore} from '@stores'
+import {useParams, useNavigate} from 'react-router-dom'
+import {toast} from 'react-hot-toast'
+import {socket} from '@utils'
+import {IGameState} from '@types'
 
-export const useRoomSocket = (roomId: string | null) => {
-  const [socket, setSocket] = useState<Socket | null>(null)
-  const addPlayer = useRoomStore(state => state.addPlayer)
-  const removePlayer = useRoomStore(state => state.removePlayer)
-  const {playerName} = usePlayerStore(state => state.name)
+export const useRoomSocket = () => {
+  const {id: roomId} = useParams<{id: string}>()
+  const navigate = useNavigate()
+  const [gameState, setGameState] = useState<IGameState | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (!roomId) return
 
-    const newSocket = io(API_CONFIG.baseURL, {
-      transports: ['websocket']
-    })
-
-    setSocket(newSocket)
-
-    newSocket.on('connect', () => {
-      console.log('Connected to socket')
-      newSocket.emit('join-room', roomId, playerName) // TODO: имя из стора
-    })
-
-    newSocket.on('player-joined', (player) => {
-      console.log('Player joined:', player)
-      addPlayer(player)
-    })
-
-    newSocket.on('player-left', (playerId) => {
-      console.log('Player left:', playerId)
-      removePlayer(playerId)
-    })
-
-    return () => {
-      newSocket.emit('leave-room', roomId)
-      newSocket.disconnect()
+    // 1. Подписка на game-state
+    const handleGameState = (state: IGameState) => {
+      setGameState(state)
+      setIsLoading(false)
     }
-  }, [roomId])
 
-  return socket
+    const handleConnect = () => {
+      // При каждом (пере)подключении — join-room
+      socket.emit('join-room', {roomId}, (response: {success: boolean, error?: string}) => {
+        if (!response.success) {
+          toast.error(response.error || 'Не удалось войти в комнату')
+          navigate('/rooms')
+        }
+      })
+    }
+
+    socket.off('game-state')
+    socket.on('game-state', handleGameState)
+    socket.off('connect')
+    socket.on('connect', handleConnect)
+
+    // 2. join-room (только roomId — остальное из JWT)
+    socket.emit('join-room', {roomId}, (response: {success: boolean, error?: string}) => {
+      if (!response.success) {
+        toast.error(response.error || 'Не удалось войти в комнату')
+        navigate('/rooms')
+      }
+    })
+
+    // 3. cleanup
+    return () => {
+      socket.off('game-state', handleGameState)
+      socket.off('connect', handleConnect)
+      socket.emit('leave-room')
+    }
+  }, [roomId, navigate])
+
+  return {gameState, isLoading, roomId}
 }

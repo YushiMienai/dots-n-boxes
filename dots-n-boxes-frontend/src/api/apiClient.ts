@@ -1,6 +1,7 @@
 import axios, {AxiosError, InternalAxiosRequestConfig} from 'axios'
 import {API_CONFIG} from '@config'
 import {useAuthStore} from '@stores'
+import {socket} from '@utils'
 
 // Расширяем интерфейс для хранения retry флага
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -108,6 +109,8 @@ apiClient.interceptors.response.use(
 
         // Сохраняем новый токен
         setAccessToken(accessToken)
+        socket.disconnect()
+        socket.connect()
 
         // Обновляем заголовок в оригинальном запросе
         if (originalRequest.headers) {

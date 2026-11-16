@@ -30,12 +30,10 @@ export async function playerRoutes(fastify: FastifyInstance) {
         if (room.accessLevel === EAccessLevel.PASSWORD && room.password === password
           || room.accessLevel !== EAccessLevel.PASSWORD) {
           await playerService.enterRoom(player.id, roomId)
-          fastify.io.to(`room:${roomId}`).emit('player-joined', {id: player.id, name: player.name})
           return {success: true, message: 'Entered room successfully'}
         } else {
           throw new Error('Forbidden to enter room')
         }
-
       } else {
         throw new Error('Player not found')
       }
@@ -48,9 +46,7 @@ export async function playerRoutes(fastify: FastifyInstance) {
       const player = request.player
 
       if (player) {
-        const currentRoomId = playerService.getCurrentRoom(player.id)
         await playerService.leaveRoom(player.id)
-        fastify.io.to(`room:${currentRoomId}`).emit('player-left', {id: player.id, name: player.name})
         return {success: true, message: 'Left room successfully'}
       } else {
         throw new Error('Player not found')

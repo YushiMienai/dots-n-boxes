@@ -38,10 +38,11 @@ export async function authRoutes(fastify: FastifyInstance) {
         userAgent: request.headers['user-agent'],
         ipAddress: request.ip
       })
+      const roomId = await fastify.playerService.getCurrentRoom(player.id)
       reply.header('Set-Cookie',
         `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=604800; Secure; SameSite=None`
       )
-      return {name: player.name, accessToken}
+      return {name: player.name, accessToken, roomId}
     }
   )
 
@@ -49,12 +50,6 @@ export async function authRoutes(fastify: FastifyInstance) {
     const refreshToken = getCookie(request, 'refreshToken')
 
     if (refreshToken) {
-      const foundToken = await fastify.tokenService.validateRefreshToken(refreshToken)
-
-      if (foundToken) {
-        await fastify.playerService.leaveRoom(foundToken.player.id)
-      }
-
       await fastify.tokenService.revokeRefreshToken(refreshToken)
     }
 

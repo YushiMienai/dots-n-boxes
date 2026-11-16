@@ -82,12 +82,12 @@ export class PlayerService {
     })
   }
 
-  async getCurrentRoom(playerId: string): Promise<string | null> {
+  async getCurrentRoom(playerId: string): Promise<string | undefined> {
     const player = await this.playerRepository.findOne({
       where: {id: playerId},
       select: {gameRoomId: true}
     })
-    return player?.gameRoomId || null
+    return player?.gameRoomId || undefined
   }
 
   async getPlayersInRoom(roomId: string): Promise<PlayerEntity[]> {

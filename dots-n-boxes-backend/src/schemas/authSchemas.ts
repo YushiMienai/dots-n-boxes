@@ -12,7 +12,8 @@ const requestBody = z.object({
 
 const responseBody = z.object({
   name: z.string(),
-  accessToken: z.string()
+  accessToken: z.string(),
+  roomId: z.string().optional()
 })
 
 const errorBody = z.object({

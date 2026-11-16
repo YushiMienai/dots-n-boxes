@@ -12,7 +12,11 @@ export const useLogin = () => {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       loginStore(data.name, data.accessToken)
-      navigate('/rooms')
+      if (data.roomId) {
+        navigate(`/rooms/${data.roomId}`)
+      } else {
+        navigate('/rooms')
+      }
     },
   })
 }

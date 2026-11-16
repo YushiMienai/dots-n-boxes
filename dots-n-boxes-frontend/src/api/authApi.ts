@@ -7,12 +7,12 @@ const authEndpoints = API_CONFIG.endpoints.auth
 export const authApi = {
   login: async (credentials: ILoginRequest): Promise<IAuthResponse> => {
     const {data} = await authClient.post<IAuthResponse>(authEndpoints.login, credentials)
-    return data as IAuthResponse
+    return data
   },
 
   register: async (credentials: IRegisterRequest): Promise<IAuthResponse> => {
     const {data} = await authClient.post<IAuthResponse>(authEndpoints.register, credentials)
-    return data as IAuthResponse
+    return data
   },
 
   logout: () => authClient.delete(authEndpoints.logout),
@@ -24,6 +24,7 @@ export const authApi = {
 
   refreshToken: async (): Promise<string> => {
     const {data} = await authClient.post<{accessToken: string}>(authEndpoints.refresh)
+    console.log('refreshToken', data)
     const {accessToken} = await data
     return accessToken
   }

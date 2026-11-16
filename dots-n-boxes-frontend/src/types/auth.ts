@@ -2,6 +2,7 @@ export interface IAuthResponse {
   name: string
   accessToken: string
   refreshToken: string
+  roomId: string | undefined
 }
 
 export interface ILoginRequest {

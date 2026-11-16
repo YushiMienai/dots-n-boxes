@@ -19,7 +19,6 @@
       "@errors": ["./src/errors"],
       "@dto": ["./src/dto"],
       "@types": ["./src/types"],
-      "@managers": ["./src/game/managers"],
       "@core": ["./src/game/core"],
       "@database": ["./src/database"],
       "@services": ["./src/services"],

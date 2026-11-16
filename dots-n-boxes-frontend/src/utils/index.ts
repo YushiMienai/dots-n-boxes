@@ -3,3 +3,4 @@ export {calculateGridDimensions, createGridPoints, getBorderCoordinates} from '.
 export {createHorizontalLines, createVerticalLines, findClickedLine, findClickedLineWithTolerance} from './lines'
 export {list} from './menu.ts'
 export {getErrorMessage} from './errors'
+export {socket} from './socket'

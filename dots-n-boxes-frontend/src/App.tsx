@@ -1,8 +1,17 @@
+import {useEffect} from 'react'
 import {Outlet} from 'react-router-dom'
 import {Toaster} from 'react-hot-toast'
 import {Menu} from '@components'
+import {socket} from '@utils'
 
 export const App = () => {
+  useEffect(() => {
+    socket.connect()
+    return () => {
+      socket.disconnect()
+    }
+  }, [])
+
   return (
     <>
       <Toaster
@@ -30,7 +39,9 @@ export const App = () => {
         }}
       />
       <Menu />
-      <Outlet />
+      <main className='pt-16'>
+        <Outlet />
+      </main>
     </>
   )
 }
