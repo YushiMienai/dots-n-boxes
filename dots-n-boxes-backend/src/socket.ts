@@ -114,6 +114,25 @@ export function setupSocket(fastify: FastifyInstance) {
         callback?.({success: false, error: (err as Error).message})
       }
     })
+
+    socket.on('reset-request', async ({roomId}, callback) => {
+      try {
+        socket.to(`room:${roomId}`).emit('reset-request')
+        callback?.({success: true})
+      } catch (err) {
+        callback?.({success: false, error: (err as Error).message})
+      }
+    })
+
+    socket.on('reset-answer', async ({roomId, answer}, callback) => {
+      try {
+        const state = await gameManager.handleReset(roomId, answer)
+        io.to(`room:${roomId}`).emit('game-state', state)
+        callback?.({success: true})
+      } catch (err) {
+        callback?.({success: false, error: (err as Error).message})
+      }
+    })
   })
 
   return io

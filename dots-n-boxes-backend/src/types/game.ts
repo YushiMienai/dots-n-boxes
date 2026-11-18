@@ -36,4 +36,5 @@ export interface IGameState {
   horizontalLines: ILine[]
   verticalLines: ILine[]
   status: EGameStatus
+  resetVoteYes: number
 }

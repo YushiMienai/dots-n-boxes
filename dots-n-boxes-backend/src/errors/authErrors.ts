@@ -3,7 +3,7 @@ import {AppError} from './appErrors'
 
 class AuthenticationError extends AppError {
   constructor(message: string = 'Authentication required', code: string = 'AUTHENTICATION_ERROR') {
-    super(message, 401, 'AUTHENTICATION_ERROR')
+    super(message, 401, code)
   }
 }
 

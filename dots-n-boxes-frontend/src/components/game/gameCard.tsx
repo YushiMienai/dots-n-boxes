@@ -1,20 +1,27 @@
 import {IGameState} from '@types'
 import {calculateScores, getPlayerColor} from '@utils'
-import './GameCard.css'
 import {useMemo} from 'react'
 
 interface GameCardProps {
   roomId: string
   gameState: IGameState
+  reset: () => void
 }
 
-export const GameCard = ({gameState}: GameCardProps) => {
+export const GameCard = ({gameState, reset}: GameCardProps) => {
   const scores = useMemo(() => calculateScores(gameState.cells), [gameState.cells])
 
   return (
     <div className="game-card">
       <div className="game-header">
-        Комната: <strong>{gameState.roomName}</strong>
+        <div>Комната: <strong>{gameState.roomName}</strong></div>
+        <button
+          type="button"
+          onClick={reset}
+          className={'reset-btn is-confirm'}
+        >
+           Сбросить
+        </button>
       </div>
 
       <div className="players-list">

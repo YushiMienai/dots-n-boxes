@@ -9,6 +9,7 @@ export const useRoomSocket = () => {
   const navigate = useNavigate()
   const [gameState, setGameState] = useState<IGameState | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [askResetConfirm, setAskResetConfirm] = useState(false)
 
   useEffect(() => {
     if (!roomId) return
@@ -30,8 +31,13 @@ export const useRoomSocket = () => {
       })
     }
 
+    const handleResetRequest = () => {
+      setAskResetConfirm(true)
+    }
+
     socket.on('game-state', handleGameState)
     socket.on('connect', handleConnect)
+    socket.on('reset-request', handleResetRequest)
 
     if (socket.connected) handleConnect()
     else socket.connect()
@@ -40,9 +46,10 @@ export const useRoomSocket = () => {
     return () => {
       socket.off('game-state', handleGameState)
       socket.off('connect', handleConnect)
+      socket.off('reset-request', handleResetRequest)
       socket.emit('leave-room')
     }
   }, [roomId, navigate])
 
-  return {gameState, setGameState, isLoading, roomId}
+  return {gameState, setGameState, isLoading, roomId, askResetConfirm, setAskResetConfirm}
 }

@@ -66,6 +66,7 @@ export class GameManager {
       verticalLines,
       status: EGameStatus.WAITING,
       winnerId: null,
+      resetVoteYes: 0
     }
   }
 
@@ -197,7 +198,6 @@ export class GameManager {
    * слишком большой для каждого хода (~75 КБ).
    */
   async handleMove(roomId: string, lineId: string, socketId: string): Promise<IGameState> {
-    console.log(roomId, lineId, socketId)
     const game = this.games.get(roomId)
     if (!game) throw new Error('Game not found')
     if (game.status !== EGameStatus.IN_PROGRESS) throw new Error('Not in progress')
@@ -247,6 +247,27 @@ export class GameManager {
       const maxScore = Math.max(...scores.map(s => s.count))
       const winners = scores.filter(s => s.count === maxScore)
       game.winnerId = winners.length === 1 ? winners[0].id : null
+    }
+
+    return game
+  }
+
+  async handleReset(roomId: string, answer: boolean) {
+    const game = this.games.get(roomId)
+    if (!game) throw new Error('Game not found')
+
+    if (answer) game.resetVoteYes++
+    else {
+      game.resetVoteYes = 0
+      return game
+    }
+
+    if (game.resetVoteYes === game.players.length - 1) {
+      const newGame = this.createInitialGameState(roomId, game.roomName, game.maxPlayers)
+      newGame.players = game.players
+      newGame.status = EGameStatus.IN_PROGRESS
+      this.games.set(roomId, newGame)
+      return newGame
     }
 
     return game
