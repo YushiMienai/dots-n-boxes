@@ -1,6 +1,5 @@
 import {IGameState, ICell} from '@types'
 
-
 export const findClosedCells = (
   lineId: string,
   game: IGameState,

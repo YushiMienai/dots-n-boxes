@@ -8,7 +8,7 @@ interface GameCardProps {
   gameState: IGameState
 }
 
-export const GameCard = ({roomId, gameState}: GameCardProps) => {
+export const GameCard = ({gameState}: GameCardProps) => {
   const scores = useMemo(() => calculateScores(gameState.cells), [gameState.cells])
 
   return (
