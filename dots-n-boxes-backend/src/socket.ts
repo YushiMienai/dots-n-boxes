@@ -102,16 +102,16 @@ export function setupSocket(fastify: FastifyInstance) {
       }
     })
 
-    socket.on('move', async ({roomId, move}, callback) => {
+    socket.on('move', async ({roomId, lineId}, callback) => {
       try {
-        // Менеджер обновляет состояние и возвращает то, что нужно разослать
-        const result = await gameManager.handleMove(roomId, move, socket.id)
+        const state = await gameManager.handleMove(roomId, lineId, socket.id)
 
-        // Рассылаем всем в комнате
-        socket.to(`room:${roomId}`).emit('game-update', result)
+        // Отправляем ПОЛНОЕ состояние всем в комнате
+        io.to(`room:${roomId}`).emit('game-state', state)
+
         callback?.({success: true})
       } catch (err) {
-        callback?.({error: (err as Error).message})
+        callback?.({success: false, error: (err as Error).message})
       }
     })
   })

@@ -15,6 +15,7 @@ export const useRoomSocket = () => {
 
     // 1. Подписка на game-state
     const handleGameState = (state: IGameState) => {
+      console.log(state)
       setGameState(state)
       setIsLoading(false)
     }
@@ -29,18 +30,11 @@ export const useRoomSocket = () => {
       })
     }
 
-    socket.off('game-state')
     socket.on('game-state', handleGameState)
-    socket.off('connect')
     socket.on('connect', handleConnect)
 
-    // 2. join-room (только roomId — остальное из JWT)
-    socket.emit('join-room', {roomId}, (response: {success: boolean, error?: string}) => {
-      if (!response.success) {
-        toast.error(response.error || 'Не удалось войти в комнату')
-        navigate('/rooms')
-      }
-    })
+    if (socket.connected) handleConnect()
+    else socket.connect()
 
     // 3. cleanup
     return () => {
@@ -50,5 +44,5 @@ export const useRoomSocket = () => {
     }
   }, [roomId, navigate])
 
-  return {gameState, isLoading, roomId}
+  return {gameState, setGameState, isLoading, roomId}
 }

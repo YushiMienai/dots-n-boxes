@@ -6,4 +6,4 @@ if (!process.env.JWT_SECRET) {
 
 export const JWT_SECRET_BYTES = new TextEncoder().encode(process.env.JWT_SECRET)
 
-export const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#eab308']
+export const BOARD_SIZE = 10

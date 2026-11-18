@@ -1,17 +1,8 @@
 import {IPlayer} from './players'
 
-export interface ICoordinate {
-  x: number
-  y: number
-}
-
 export interface ILine {
-  start: ICoordinate
-  end: ICoordinate
-  clickableStart: ICoordinate
-  clickableEnd: ICoordinate
-  isSelected: boolean
-  isHorizontal: boolean
+  lineId: string
+  ownerId: string | null
 }
 
 export interface ICell {
@@ -19,13 +10,19 @@ export interface ICell {
   bottom: ILine
   left: ILine
   right: ILine
-  owner: number | null
+  ownerId: string | null
 }
 
 export interface IGameState {
+  roomId: string
+  roomName: string
   players: IPlayer[]
   activePlayerIndex: number
   cells: ICell[]
   horizontalLines: ILine[]
   verticalLines: ILine[]
 }
+
+export type MoveResponse =
+  | {success: true}
+  | {success: false, error: string}

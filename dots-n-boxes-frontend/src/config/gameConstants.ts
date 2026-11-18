@@ -1,35 +1,8 @@
-import {GAME_CONSTANTS} from './constants'
-
-// Константы для создания линий
-export const LINE_CONSTANTS = {
-  HORIZONTAL: {
-    LENGTH: GAME_CONSTANTS.CELL_SIZE,
-    CLICKABLE: {
-      VERTICAL_TOLERANCE: GAME_CONSTANTS.CLICK_TOLERANCE.HORIZONTAL.VERTICAL_TOLERANCE,
-      HORIZONTAL_PADDING: GAME_CONSTANTS.CLICK_TOLERANCE.HORIZONTAL.HORIZONTAL_PADDING
-    }
-  },
-  VERTICAL: {
-    LENGTH: GAME_CONSTANTS.CELL_SIZE,
-    CLICKABLE: {
-      HORIZONTAL_TOLERANCE: GAME_CONSTANTS.CLICK_TOLERANCE.VERTICAL.HORIZONTAL_TOLERANCE,
-      VERTICAL_PADDING: GAME_CONSTANTS.CLICK_TOLERANCE.VERTICAL.VERTICAL_PADDING
-    }
-  }
-} as const
-
-// Константы для граничных линий
-export const BORDER_LINES = {
-  TOP: 2,
-  BOTTOM: 326, // 2 + 9 * 36
-  LEFT: 2,
-  RIGHT: 326
-} as const
-
-// Настройки сетки
-export const GRID_CONSTANTS = {
-  ROWS: GAME_CONSTANTS.GRID_SIZE,
-  COLS: GAME_CONSTANTS.GRID_SIZE,
-  HORIZONTAL_LINE_COUNT: 10 * 9, // 10 рядов по 9 линий
-  VERTICAL_LINE_COUNT: 9 * 10    // 9 рядов по 10 линий
-} as const
+export const CELL_SIZE = 39
+export const BOARD_SIZE = 10
+export const CANVAS_SIZE = CELL_SIZE * BOARD_SIZE
+export const CANVAS_PADDING = 4
+export const LINE_WIDTH = 2
+export const PLAYER_COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#eab308']
+export const FREE_LINE = '#94A3B8'
+export const EMPTY_CELL = '#F8FAFC'

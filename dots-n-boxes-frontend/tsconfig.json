@@ -28,7 +28,6 @@
       "@router": ["./router"],
       "@stores": ["./stores"],
       "@config": ["./config"],
-      "@game": ["./game"],
       "@styles": ["./styles/index.css"],
       "@svg": ["./types/svg"],
       "@constants": ["./types/constants"]

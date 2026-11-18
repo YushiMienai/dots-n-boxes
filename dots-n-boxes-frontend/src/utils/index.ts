@@ -1,6 +1,6 @@
-export {checkForCompletedCells, createCells} from './cells'
 export {calculateGridDimensions, createGridPoints, getBorderCoordinates} from './coordinate'
 export {createHorizontalLines, createVerticalLines, findClickedLine, findClickedLineWithTolerance} from './lines'
 export {list} from './menu.ts'
 export {getErrorMessage} from './errors'
 export {socket} from './socket'
+export {getPlayerColor, calculateScores} from './game'

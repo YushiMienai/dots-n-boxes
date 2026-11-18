@@ -1,17 +1,8 @@
 import {EGameStatus} from './enum'
 
-export interface ICoordinate {
-  x: number
-  y: number
-}
-
 export interface ILine {
-  start: ICoordinate
-  end: ICoordinate
-  clickableStart: ICoordinate
-  clickableEnd: ICoordinate
-  isSelected: boolean
-  isHorizontal: boolean
+  lineId: string
+  ownerId: string | null
 }
 
 export interface ICell {
@@ -19,7 +10,7 @@ export interface ICell {
   bottom: ILine
   left: ILine
   right: ILine
-  owner: string | null
+  ownerId: string | null
 }
 
 export interface IPlayer {
@@ -36,9 +27,10 @@ export interface IGamePlayer extends IPlayer {
 
 export interface IGameState {
   roomId: string
+  roomName: string
   players: IGamePlayer[]
   maxPlayers: number
-  activePlayerId: string | null
+  activePlayerIndex: number
   winnerId: string | null
   cells: ICell[]
   horizontalLines: ILine[]

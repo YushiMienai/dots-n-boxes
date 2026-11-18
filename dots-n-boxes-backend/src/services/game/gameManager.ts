@@ -1,6 +1,7 @@
-import {EGameStatus, IGameState, IPlayer} from '@types'
-import {COLORS} from '@constants'
+import {EGameStatus, ICell, IGameState, ILine, IPlayer} from '@types'
+import {BOARD_SIZE} from '@constants'
 import {RoomService} from '../repository/roomService'
+import {findClosedCells, isBorderLine} from '@utils'
 
 /**
  * Менеджер активных игр в памяти.
@@ -17,6 +18,57 @@ export class GameManager {
 
   constructor(private roomService: RoomService) {}
 
+  private createInitialGameState(roomId: string, roomName: string, maxPlayers: number): IGameState {
+    const SYSTEM_ID = 'system'
+    // Генерируем все линии
+    const horizontalLines: ILine[] = []
+    for (let row = 0; row <= BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        horizontalLines.push({lineId: `h-${row}-${col}`, ownerId: [0, 10].includes(row) ? SYSTEM_ID : null})
+      }
+    }
+
+    const verticalLines: ILine[] = []
+    for (let col = 0; col <= BOARD_SIZE; col++) {
+      for (let row = 0; row < BOARD_SIZE; row++) {
+        verticalLines.push({lineId: `v-${col}-${row}`, ownerId: [0, 10].includes(col) ? SYSTEM_ID : null})
+      }
+    }
+
+    // Генерируем клетки
+    const cells: ICell[] = []
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        // Находим линии по их ID
+        const top = horizontalLines.find(l => l.lineId === `h-${row}-${col}`)!
+        const bottom = horizontalLines.find(l => l.lineId === `h-${row + 1}-${col}`)!
+        const left = verticalLines.find(l => l.lineId === `v-${col}-${row}`)!
+        const right = verticalLines.find(l => l.lineId === `v-${col + 1}-${row}`)!
+
+        cells.push({
+          top,
+          bottom,
+          left,
+          right,
+          ownerId: null,
+        })
+      }
+    }
+
+    return {
+      roomId,
+      roomName,
+      players: [],
+      maxPlayers,
+      activePlayerIndex: 0,
+      cells,
+      horizontalLines,
+      verticalLines,
+      status: EGameStatus.WAITING,
+      winnerId: null,
+    }
+  }
+
   /**
    * Добавляет игрока в активную игру.
    *
@@ -32,21 +84,12 @@ export class GameManager {
   async handlePlayerJoin(roomId: string, player: IPlayer, socketId: string): Promise<IGameState> {
     // добавить игрока в состояние игры
     let game = this.games.get(roomId)
+
     if (!game) {
-      const room = await this.roomService.getRoom(roomId)  // ← из БД
+      const room = await this.roomService.getRoom(roomId)
       if (!room) throw new Error('Room not found')
 
-      game = {
-        roomId,
-        players: [],
-        maxPlayers: room.maxPlayers,
-        activePlayerId: null,
-        winnerId: null,
-        cells: [],
-        horizontalLines: [],
-        verticalLines: [],
-        status: EGameStatus.WAITING
-      }
+      game = this.createInitialGameState(roomId, room.name, room.maxPlayers)
       this.games.set(roomId, game)
     }
 
@@ -62,12 +105,10 @@ export class GameManager {
       throw new Error('Room is full')
     }
 
-    const color = COLORS[game.players.length]
-    game.players.push({...player, socketId, isOnline: true, color})
+    game.players.push({...player, socketId, isOnline: true})
 
     if (game.players.length === game.maxPlayers) {
       game.status = EGameStatus.IN_PROGRESS
-      game.activePlayerId = game.players[0].id // первый ходит
     }
 
     return game
@@ -155,9 +196,59 @@ export class GameManager {
    * io.emit('move-made', delta). НЕ полный game-state — 10×10
    * слишком большой для каждого хода (~75 КБ).
    */
-  async handleMove(roomId: string, move: unknown, socketId: string) {
-    // обработать ход, проверить валидность, обновить состояние
-    // отправить обновление через io.to(roomId).emit(...)
-    throw new Error('Not implemented')
+  async handleMove(roomId: string, lineId: string, socketId: string): Promise<IGameState> {
+    console.log(roomId, lineId, socketId)
+    const game = this.games.get(roomId)
+    if (!game) throw new Error('Game not found')
+    if (game.status !== EGameStatus.IN_PROGRESS) throw new Error('Not in progress')
+
+    const player = game.players.find(p => p.socketId === socketId)
+    if (!player) throw new Error('Player not in game')
+    if (game.activePlayerIndex !== game.players.indexOf(player)) throw new Error('Not your turn')
+
+    // Проверка, что линия не проведена
+    const isHorizontal = lineId.startsWith('h-')
+    const lines = isHorizontal ? game.horizontalLines : game.verticalLines
+    const line = lines.find(l => l.lineId === lineId)
+
+    if (!line) throw new Error('Line not found')
+    if (line.ownerId !== null) throw new Error('Line already drawn')
+
+    // Добавляем
+    line.ownerId = player.id
+
+    // Проверяем закрытые клетки
+    const closedCells = findClosedCells(lineId, game)
+    console.log(closedCells)
+    closedCells.forEach(cell => cell.ownerId = player.id)
+
+    // Смена activePlayerIndex
+    if (closedCells.length === 0) {
+      game.activePlayerIndex = (game.activePlayerIndex + 1) % game.players.length
+    }
+
+    // Проверка конца
+    const totalLines = game.horizontalLines.filter(l => l.ownerId !== null).length
+      + game.verticalLines.filter(l => l.ownerId !== null).length
+    const borderLines = 2 * BOARD_SIZE * 2  // 4 стороны, но крайние — не внутренние
+    const maxLines = 2 * BOARD_SIZE * (BOARD_SIZE + 1) - borderLines  // только внутренние
+
+    // На самом деле проще: игра закончена, если все внутренние линии проведены
+    const allInternalLinesDrawn = [...game.horizontalLines, ...game.verticalLines]
+      .filter(l => !isBorderLine(l.lineId, BOARD_SIZE))
+      .every(l => l.ownerId !== null)
+
+    if (allInternalLinesDrawn) {
+      game.status = EGameStatus.FINISHED
+      const scores = game.players.map(p => ({
+        id: p.id,
+        count: game.cells.filter(c => c.ownerId === p.id).length,
+      }))
+      const maxScore = Math.max(...scores.map(s => s.count))
+      const winners = scores.filter(s => s.count === maxScore)
+      game.winnerId = winners.length === 1 ? winners[0].id : null
+    }
+
+    return game
   }
 }

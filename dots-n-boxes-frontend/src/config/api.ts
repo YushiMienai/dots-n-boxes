@@ -42,6 +42,11 @@ export const API_CONFIG = {
       details: (id: string) => `/rooms/${id}`,
       delete: (id: string) => `/rooms/${id}`,
       players: (id: string) => `/rooms/${id}/players`   // игроки в комнате
+    },
+
+    // Игра
+    game: {
+      move: '/move'
     }
   }
 }

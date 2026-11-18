@@ -14,7 +14,6 @@ export const socket = io(API_CONFIG.baseURL, {
 let isRefreshing = false
 
 socket.on('connect_error', async (err) => {
-  console.log('[connect_error]', err.message)
   if (err.message.includes('JWTExpired') && !isRefreshing) {
     isRefreshing = true
     try {
