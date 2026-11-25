@@ -12,7 +12,13 @@ export const createApp = async () => {
   await fastify.register(fastifyCookie, {secret: process.env.COOKIE_SECRET})
 
   await fastify.register(cors, {
-    origin: FRONTEND_URL,
+    origin: (origin, callback) => {
+      if (!origin || FRONTEND_URL.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
   })

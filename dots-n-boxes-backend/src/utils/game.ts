@@ -4,14 +4,12 @@ export const findClosedCells = (
   lineId: string,
   game: IGameState,
 ): ICell[] => {
-  console.log('findClosedCells', lineId)
   const closeCells = game.cells.filter(cell =>
     cell.left.lineId === lineId ||
     cell.top.lineId === lineId ||
     cell.right.lineId === lineId ||
     cell.bottom.lineId === lineId
   )
-  console.log(closeCells)
 
   return closeCells.filter(cell => cell.left.ownerId && cell.top.ownerId && cell.right.ownerId && cell.bottom.ownerId)
 }

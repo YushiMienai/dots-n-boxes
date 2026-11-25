@@ -19,10 +19,9 @@ export const config: Config = {
     password: process.env.DB_PASSWORD || 'password',
     database: process.env.DB_NAME || 'dots_and_boxes',
     synchronize: false,
-    logging: process.env.NODE_ENV !== 'production',
+    logging: process.env.NODE_ENV !== 'production' ? ['error'] : false,
     entities: [path.join(__dirname, 'entities/**/*.entity.ts')],
     migrations: [path.join(__dirname, 'migrations/**/*.ts')],
-    migrationsRun: true,
     namingStrategy: new SnakeNamingStrategy()
   },
   server: {

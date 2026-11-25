@@ -20,10 +20,11 @@ type RoomStore = RoomState & RoomActions
 
 export const useRoomStore = create<RoomStore>()(
   (set, get) => ({
-    id: null,
+    id: '',
     name: '',
     maxPlayers: 2,
     players: [],
+    isLoading: false,
     addPlayer: (player) => {
       const {players, maxPlayers} = get()
 
@@ -60,6 +61,5 @@ export const useRoomStore = create<RoomStore>()(
     setLoading: (loading: boolean) => {
       set({isLoading: loading})
     }
-  }),
-  {name: 'room-store'}
+  })
 )

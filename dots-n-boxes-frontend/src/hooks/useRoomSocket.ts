@@ -16,7 +16,6 @@ export const useRoomSocket = () => {
 
     // 1. Подписка на game-state
     const handleGameState = (state: IGameState) => {
-      console.log(state)
       setGameState(state)
       setIsLoading(false)
     }

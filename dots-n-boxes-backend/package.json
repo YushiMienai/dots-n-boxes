@@ -1,7 +1,7 @@
 {
   "name": "dots-and-boxes-backend",
   "scripts": {
-    "dev": "ts-node-dev --files -r dotenv/config -r tsconfig-paths/register src/server.ts",
+    "dev": "tsx watch --clear-screen=false -r dotenv/config -r tsconfig-paths/register src/server.ts",
     "build": "tsc",
     "start": "node -r tsconfig-paths/register dist/server.js",
     "typeorm": "typeorm-ts-node-commonjs",
@@ -13,7 +13,6 @@
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.2.0",
-    "@fastify/websocket": "^11.2.0",
     "@types/socket.io": "^3.0.1",
     "bcrypt": "^6.0.0",
     "class-validator": "^0.15.1",
@@ -25,15 +24,18 @@
     "socket.io": "^4.8.3",
     "typeorm": "^1.1.1",
     "typeorm-naming-strategy": "^3.0.0",
-    "ws": "^8.22.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^25.3.2",
     "@types/pg": "^8.16.0",
-    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true,
+    "esbuild@0.28.2": true
   }
 }

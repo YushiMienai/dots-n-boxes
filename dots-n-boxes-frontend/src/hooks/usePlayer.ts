@@ -26,7 +26,7 @@ export const useEnterRoom = () => {
   const navigate = useNavigate()
 
   return useMutation({
-    mutationFn: ({roomId, password}: { roomId: string; password?: string }) => playerApi.enterRoom(roomId, password),
+    mutationFn: ({roomId, password}: {roomId: string; password?: string}) => playerApi.enterRoom(roomId, password),
     onSuccess: (_, {roomId}) => {
       enterRoom(roomId)
       navigate(`/rooms/${roomId}`)

@@ -1,13 +1,11 @@
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
-import eslint from 'vite-plugin-eslint'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
 export default defineConfig({
   plugins: [
     react(),
-    eslint(),
     tailwindcss()
   ],
   resolve: {
@@ -30,13 +28,17 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './tests/setup.ts'
+    setupFiles: './setup-vitest.ts'
   },
   server: {
-    host: '0.0.0.0',
+    host: true,
     port: 5173,
     strictPort: false,
     open: false,
-    cors: true
+    cors: true,
+    watch: {
+      // Не следить за node_modules и сборками — меньше I/O на Windows
+      ignored: ['**/node_modules/**', '**/dist/**', '**/.git/**']
+    }
   }
 })

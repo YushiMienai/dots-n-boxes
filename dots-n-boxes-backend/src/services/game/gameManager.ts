@@ -219,7 +219,6 @@ export class GameManager {
 
     // Проверяем закрытые клетки
     const closedCells = findClosedCells(lineId, game)
-    console.log(closedCells)
     closedCells.forEach(cell => cell.ownerId = player.id)
 
     // Смена activePlayerIndex
