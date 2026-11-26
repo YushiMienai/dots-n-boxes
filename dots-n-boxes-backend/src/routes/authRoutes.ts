@@ -12,7 +12,7 @@ declare module 'fastify' {
 }
 
 export async function authRoutes(fastify: FastifyInstance) {
-  const secureHeaderPart = process.env.NODE_ENV === 'development' ? 'Secure; SameSite=None' : ''
+  const secureHeaderPart = process.env.NODE_ENV === 'development' ? '' : 'Secure; SameSite=None'
   fastify.post<{Body: AuthRequest, Reply: AuthResponse}>('/register',
     {preHandler: validate(authSchemas.register.body, 'body')},
     async (request, reply): Promise<AuthResponse> => {
