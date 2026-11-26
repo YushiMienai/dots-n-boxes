@@ -58,10 +58,13 @@ export function setupSocket(fastify: FastifyInstance) {
         const playerName = socket.data.playerName
         const player: IPlayer = {id: playerId, name: playerName, isOnline: true, gameRoomId: roomId}
 
+        // Сначала валидируем вход в GameManager (RoomFullError/RoomNotFound),
+        // и только потом подписываем сокет на комнату. Иначе при ошибке
+        // клиент уже получал бы game-state чужой комнаты.
+        const state = await gameManager.handlePlayerJoin(roomId, player, socket.id)
+
         socket.join(`room:${roomId}`)
         socket.data.roomId = roomId
-
-        const state = await gameManager.handlePlayerJoin(roomId, player, socket.id)
 
         // 3. Рассылаем ПОЛНОЕ состояние всем (включая себя)
         io.to(`room:${roomId}`).emit('game-state', state)

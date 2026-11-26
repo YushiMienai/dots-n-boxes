@@ -34,13 +34,16 @@ export const RoomList = () => {
   }
 
   const onClickEnter = (room: IRoomResponse, password?: string) => {
+    // Защита на фронте: не дёргаем бэк, если комната заведомо недоступна
+    if (room.currentPlayersCount >= room.maxPlayers) return
+
     if (room.accessLevel === EAccessLevel.PASSWORD) {
       if (!password?.trim()) return
       enterRoom.mutate({roomId: room.id, password})
     } else {
       enterRoom.mutate({roomId: room.id})
     }
-    navigate(`/rooms/${room.id}`)
+    // navigate делает useEnterRoom.onSuccess — только после 2xx
   }
 
   return (

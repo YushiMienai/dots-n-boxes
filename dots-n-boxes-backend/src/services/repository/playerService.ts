@@ -1,5 +1,6 @@
 import {AppDataSource} from '@database'
 import {PlayerEntity, RoomEntity} from '@entities'
+import {RoomFullError, RoomNotFound} from '@errors'
 
 export class PlayerService {
   private playerRepository = AppDataSource.getRepository(PlayerEntity)
@@ -28,12 +29,12 @@ export class PlayerService {
       })
 
       if (!room) {
-        throw new Error('Room not found')
+        throw new RoomNotFound()
       }
 
       // 3. Проверяем, не полная ли комната
       if (room.players.length >= room.maxPlayers) {
-        throw new Error('Room is full')
+        throw new RoomFullError()
       }
 
       // 4. Обновляем игрока
@@ -67,13 +68,16 @@ export class PlayerService {
         gameRoom: null
       })
 
-      // 3. Проверяем, остались ли игроки в комнате
-      const playersCount = await playerRepo.count({
-        where: {gameRoomId: roomId}
+      // 3. Смотрим, была ли игра начата
+      const room = await roomRepo.findOne({
+        where: {id: roomId},
+        select: {id: true, isGameStarted: true}
       })
 
-      // 4. Если комната опустела - сбрасываем состояние
-      if (playersCount === 0) {
+      // 4. Сбрасываем состояние комнаты, если игра шла.
+      //    Явный выход игрока из идущей игры возвращает комнату
+      //    в WAITING — играть больше некому, линии обнуляются.
+      if (room?.isGameStarted) {
         await roomRepo.update(roomId, {
           isGameStarted: false,
           isGameFinished: false

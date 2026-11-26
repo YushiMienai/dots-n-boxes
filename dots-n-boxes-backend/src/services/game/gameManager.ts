@@ -2,6 +2,7 @@ import {EGameStatus, ICell, IGameState, ILine, IPlayer} from '@types'
 import {BOARD_SIZE} from '@constants'
 import {RoomService} from '../repository/roomService'
 import {findClosedCells, isBorderLine} from '@utils'
+import {RoomNotFound, RoomFullError} from '@errors'
 
 /**
  * Менеджер активных игр в памяти.
@@ -88,9 +89,25 @@ export class GameManager {
 
     if (!game) {
       const room = await this.roomService.getRoom(roomId)
-      if (!room) throw new Error('Room not found')
+      if (!room) throw new RoomNotFound()
 
       game = this.createInitialGameState(roomId, room.name, room.maxPlayers)
+
+      // Засеваем игроков из БД (могли войти через HTTP до рестарта сервера).
+      // socketId = null, isOnline = false — при join обновим socketId.
+      // Это критично для проверки maxPlayers: без этого in-memory
+      // game.players пуст и лимит не соблюдается.
+      if (room.players?.length) {
+        game.players = room.players.map(p => ({
+          ...p,
+          socketId: null,
+          isOnline: false
+        }))
+        if (game.players.length >= game.maxPlayers) {
+          game.status = EGameStatus.IN_PROGRESS
+        }
+      }
+
       this.games.set(roomId, game)
     }
 
@@ -103,7 +120,7 @@ export class GameManager {
     }
 
     if (game.players.length >= game.maxPlayers) {
-      throw new Error('Room is full')
+      throw new RoomFullError()
     }
 
     game.players.push({...player, socketId, isOnline: true})
@@ -137,6 +154,17 @@ export class GameManager {
       if (game.players.length === 0) {
         this.games.delete(roomId)
         return null
+      }
+
+      // Явный выход из идущей игры → комната возвращается в WAITING,
+      // поле и счёт обнуляются (линии хранятся только в памяти).
+      if (game.status === EGameStatus.IN_PROGRESS) {
+        const freshGame = this.createInitialGameState(roomId, game.roomName, game.maxPlayers)
+        freshGame.players = game.players
+        freshGame.activePlayerIndex = 0
+        freshGame.status = EGameStatus.WAITING
+        this.games.set(roomId, freshGame)
+        return freshGame
       }
 
       return game
@@ -225,12 +253,6 @@ export class GameManager {
     if (closedCells.length === 0) {
       game.activePlayerIndex = (game.activePlayerIndex + 1) % game.players.length
     }
-
-    // Проверка конца
-    const totalLines = game.horizontalLines.filter(l => l.ownerId !== null).length
-      + game.verticalLines.filter(l => l.ownerId !== null).length
-    const borderLines = 2 * BOARD_SIZE * 2  // 4 стороны, но крайние — не внутренние
-    const maxLines = 2 * BOARD_SIZE * (BOARD_SIZE + 1) - borderLines  // только внутренние
 
     // На самом деле проще: игра закончена, если все внутренние линии проведены
     const allInternalLinesDrawn = [...game.horizontalLines, ...game.verticalLines]

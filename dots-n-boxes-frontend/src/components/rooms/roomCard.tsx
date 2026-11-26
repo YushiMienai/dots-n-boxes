@@ -10,8 +10,11 @@ interface RoomCardProps {
 export const RoomCard = ({room, onClickEnter}: RoomCardProps) => {
   const [password, setPassword] = useState<string>('')
 
+  const isRoomFull = room.currentPlayersCount >= room.maxPlayers
+
   const isEnterDisabled = (room: IRoomResponse) =>
-    room.accessLevel === EAccessLevel.PASSWORD && !password?.trim()
+    isRoomFull ||
+    (room.accessLevel === EAccessLevel.PASSWORD && !password?.trim())
 
   return (
     <div className='room-card'>
@@ -63,7 +66,7 @@ export const RoomCard = ({room, onClickEnter}: RoomCardProps) => {
         disabled={isEnterDisabled(room)}
         className='btn-primary w-full py-2.5 px-4 text-sm mt-auto'
       >
-        Присоединиться
+        {isRoomFull ? 'Комната заполнена' : 'Присоединиться'}
       </button>
     </div>
   )
