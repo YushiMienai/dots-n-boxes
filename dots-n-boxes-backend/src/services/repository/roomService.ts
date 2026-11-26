@@ -3,15 +3,6 @@ import {RoomEntity} from '@entities'
 import {RoomNotFound} from '@errors'
 import {RoomRequest, RoomSearch} from '@schemas'
 
-const ROOM_SELECT = {
-  id: true,
-  name: true,
-  accessLevel: true,
-  maxPlayers: true,
-  isGameStarted: true,
-  createdAt: true,
-} as const
-
 export class RoomService {
   private roomRepository = AppDataSource.getRepository(RoomEntity)
 
@@ -44,9 +35,13 @@ export class RoomService {
   }
 
   async getRoom(id: string): Promise<RoomEntity> {
+    // Без select: ROOM_SELECT — чтобы relations: {players: true}
+    // гарантированно вернул игроков (select фильтрует колонки
+    // связанной сущности в части версий TypeORM).
+    // password в сущности имеет select: false — не утечёт.
     const room = await this.roomRepository.findOne({
       where: [{id}],
-      select: ROOM_SELECT
+      relations: {players: true}
     })
 
     if (!room) {
