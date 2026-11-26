@@ -1,18 +1,20 @@
 import {useNavigate} from 'react-router-dom'
 import {useMutation} from '@tanstack/react-query'
 import {authApi} from '@api'
-import {useAuthStore} from '@stores'
+import {useAuthStore, usePlayerStore} from '@stores'
 import {IAuthResponse} from '@types'
 
 export const useLogin = () => {
   const navigate = useNavigate()
   const loginStore = useAuthStore(state => state.login)
+  const enterRoom = usePlayerStore(state => state.enterRoom)
 
   return useMutation({
     mutationFn: authApi.login,
     onSuccess: (data) => {
       loginStore(data.name, data.accessToken)
       if (data.roomId) {
+        enterRoom(data.roomId)
         navigate(`/rooms/${data.roomId}`)
       } else {
         navigate('/rooms')
