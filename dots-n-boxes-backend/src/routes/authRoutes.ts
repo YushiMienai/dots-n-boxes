@@ -12,6 +12,7 @@ declare module 'fastify' {
 }
 
 export async function authRoutes(fastify: FastifyInstance) {
+  const secureHeaderPart = process.env.NODE_ENV === 'development' ? 'Secure; SameSite=None' : ''
   fastify.post<{Body: AuthRequest, Reply: AuthResponse}>('/register',
     {preHandler: validate(authSchemas.register.body, 'body')},
     async (request, reply): Promise<AuthResponse> => {
@@ -23,7 +24,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       })
       reply.code(201)
       reply.header('Set-Cookie',
-        `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=604800; Secure; SameSite=None`
+        `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=604800; ${secureHeaderPart}`
       )
       return {name: player.name, accessToken}
     }
@@ -40,7 +41,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       })
       const roomId = await fastify.playerService.getCurrentRoom(player.id)
       reply.header('Set-Cookie',
-        `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=604800; Secure; SameSite=None`
+        `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=604800; ${secureHeaderPart}`
       )
       return {name: player.name, accessToken, roomId}
     }
