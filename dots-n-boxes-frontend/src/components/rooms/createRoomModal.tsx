@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import {useCreateRoom} from '@hooks'
 import {EAccessLevel, IRoomRequest} from '@types'
-import {ACCESS_OPTIONS, PLAYER_COUNTS} from '@constants'
+import {ACCESS_OPTIONS, BOARD_SIZE_OPTIONS, PLAYER_COUNTS} from '@constants'
 import {getErrorMessage} from '@utils'
 
 interface CreateRoomModalProps {
@@ -12,6 +12,7 @@ interface CreateRoomModalProps {
 const initialState: IRoomRequest = {
   name: '',
   maxPlayers: 2,
+  boardSize: 10,
   accessLevel: EAccessLevel.PUBLIC,
   password: undefined
 }
@@ -95,6 +96,19 @@ export const CreateRoomModal = ({isOpen, onClose}: CreateRoomModalProps) => {
             >
               {PLAYER_COUNTS.map((n) => (
                 <option key={n} value={n}>{n} игрока</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label>Размер поля</label>
+            <select
+              value={roomData.boardSize}
+              onChange={(e) => setRoomData(prev => ({...prev, boardSize: Number(e.target.value)}))}
+              className='input'
+            >
+              {BOARD_SIZE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
           </div>

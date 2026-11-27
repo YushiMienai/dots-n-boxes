@@ -19,27 +19,32 @@ export class GameManager {
 
   constructor(private roomService: RoomService) {}
 
-  private createInitialGameState(roomId: string, roomName: string, maxPlayers: number): IGameState {
+  private createInitialGameState(
+    roomId: string,
+    roomName: string,
+    maxPlayers: number,
+    boardSize: number = BOARD_SIZE,
+  ): IGameState {
     const SYSTEM_ID = 'system'
     // Генерируем все линии
     const horizontalLines: ILine[] = []
-    for (let row = 0; row <= BOARD_SIZE; row++) {
-      for (let col = 0; col < BOARD_SIZE; col++) {
-        horizontalLines.push({lineId: `h-${row}-${col}`, ownerId: [0, 10].includes(row) ? SYSTEM_ID : null})
+    for (let row = 0; row <= boardSize; row++) {
+      for (let col = 0; col < boardSize; col++) {
+        horizontalLines.push({lineId: `h-${row}-${col}`, ownerId: [0, boardSize].includes(row) ? SYSTEM_ID : null})
       }
     }
 
     const verticalLines: ILine[] = []
-    for (let col = 0; col <= BOARD_SIZE; col++) {
-      for (let row = 0; row < BOARD_SIZE; row++) {
-        verticalLines.push({lineId: `v-${col}-${row}`, ownerId: [0, 10].includes(col) ? SYSTEM_ID : null})
+    for (let col = 0; col <= boardSize; col++) {
+      for (let row = 0; row < boardSize; row++) {
+        verticalLines.push({lineId: `v-${col}-${row}`, ownerId: [0, boardSize].includes(col) ? SYSTEM_ID : null})
       }
     }
 
     // Генерируем клетки
     const cells: ICell[] = []
-    for (let row = 0; row < BOARD_SIZE; row++) {
-      for (let col = 0; col < BOARD_SIZE; col++) {
+    for (let row = 0; row < boardSize; row++) {
+      for (let col = 0; col < boardSize; col++) {
         // Находим линии по их ID
         const top = horizontalLines.find(l => l.lineId === `h-${row}-${col}`)!
         const bottom = horizontalLines.find(l => l.lineId === `h-${row + 1}-${col}`)!
@@ -61,6 +66,7 @@ export class GameManager {
       roomName,
       players: [],
       maxPlayers,
+      boardSize,
       activePlayerIndex: 0,
       cells,
       horizontalLines,
@@ -91,7 +97,7 @@ export class GameManager {
       const room = await this.roomService.getRoom(roomId)
       if (!room) throw new RoomNotFound()
 
-      game = this.createInitialGameState(roomId, room.name, room.maxPlayers)
+      game = this.createInitialGameState(roomId, room.name, room.maxPlayers, room.boardSize)
 
       // Засеваем игроков из БД (могли войти через HTTP до рестарта сервера).
       // socketId = null, isOnline = false — при join обновим socketId.
@@ -159,7 +165,7 @@ export class GameManager {
       // Явный выход из идущей игры → комната возвращается в WAITING,
       // поле и счёт обнуляются (линии хранятся только в памяти).
       if (game.status === EGameStatus.IN_PROGRESS) {
-        const freshGame = this.createInitialGameState(roomId, game.roomName, game.maxPlayers)
+        const freshGame = this.createInitialGameState(roomId, game.roomName, game.maxPlayers, game.boardSize)
         freshGame.players = game.players
         freshGame.activePlayerIndex = 0
         freshGame.status = EGameStatus.WAITING
@@ -256,7 +262,7 @@ export class GameManager {
 
     // На самом деле проще: игра закончена, если все внутренние линии проведены
     const allInternalLinesDrawn = [...game.horizontalLines, ...game.verticalLines]
-      .filter(l => !isBorderLine(l.lineId, BOARD_SIZE))
+      .filter(l => !isBorderLine(l.lineId, game.boardSize))
       .every(l => l.ownerId !== null)
 
     if (allInternalLinesDrawn) {
@@ -284,7 +290,7 @@ export class GameManager {
     }
 
     if (game.resetVoteYes === game.players.length - 1) {
-      const newGame = this.createInitialGameState(roomId, game.roomName, game.maxPlayers)
+      const newGame = this.createInitialGameState(roomId, game.roomName, game.maxPlayers, game.boardSize)
       newGame.players = game.players
       newGame.status = EGameStatus.IN_PROGRESS
       this.games.set(roomId, newGame)

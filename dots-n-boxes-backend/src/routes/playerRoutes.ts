@@ -26,7 +26,7 @@ export async function playerRoutes(fastify: FastifyInstance) {
       const {password} = request.body
 
       if (player) {
-        const room = await roomService.getRoomForEntry(roomId)
+        const room = await roomService.getRoomWithPassword(roomId)
         if (room.accessLevel === EAccessLevel.PASSWORD && room.password === password
           || room.accessLevel !== EAccessLevel.PASSWORD) {
           await playerService.enterRoom(player.id, roomId)

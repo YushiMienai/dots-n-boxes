@@ -17,7 +17,8 @@
 ### GameManager (в памяти)
 - Единственный источник правды для активных игр.
 - `Map<roomId, IGameState>`.
-- Не знает про `io`, не знает про БД (кроме `RoomService` для `maxPlayers`).
+- Не знает про `io`, не знает про БД (кроме `RoomService` для `maxPlayers` и `boardSize`).
+- Размер поля (`boardSize`, 5 или 10) берётся из комнаты и хранится в `IGameState`; сетка линий/клеток строится по нему, а не по глобальной константе.
 
 ### Репозитории/Services (БД)
 - `RoomService`, `PlayerService` — CRUD.

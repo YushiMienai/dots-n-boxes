@@ -35,7 +35,7 @@ describe('PlayerService.enterRoom', () => {
 
   it('бросает RoomFullError, если в комнате уже maxPlayers', async () => {
     playerRepo.findOne.mockResolvedValue({id: 'p1', gameRoom: null})
-    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, isGameStarted: false, players: [{id: 'a'}, {id: 'b'}]})
+    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, players: [{id: 'a'}, {id: 'b'}]})
     await expect(new PlayerService().enterRoom('p1', 'room-x')).rejects.toBeInstanceOf(RoomFullError)
   })
 
@@ -46,27 +46,27 @@ describe('PlayerService.enterRoom', () => {
 
   it('заходит в комнату, где есть место', async () => {
     playerRepo.findOne.mockResolvedValue({id: 'p1', gameRoom: null})
-    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, isGameStarted: false, players: [{id: 'a'}]})
+    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, players: [{id: 'a'}]})
     await new PlayerService().enterRoom('p1', 'room-x')
     expect(playerRepo.update).toHaveBeenCalledWith('p1', expect.objectContaining({gameRoom: expect.objectContaining({id: 'room-x'})}))
   })
 
   it('заходит в пустую комнату (0 игроков)', async () => {
     playerRepo.findOne.mockResolvedValue({id: 'p1', gameRoom: null})
-    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, isGameStarted: false, players: []})
+    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, players: []})
     await expect(new PlayerService().enterRoom('p1', 'room-x')).resolves.toBeUndefined()
     expect(playerRepo.update).toHaveBeenCalledTimes(1)
   })
 
   it('граница: players.length === maxPlayers - 1 — пропускает', async () => {
     playerRepo.findOne.mockResolvedValue({id: 'p1', gameRoom: null})
-    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, isGameStarted: false, players: [{id: 'a'}]})
+    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, players: [{id: 'a'}]})
     await expect(new PlayerService().enterRoom('p1', 'room-x')).resolves.toBeUndefined()
   })
 
   it('граница: players.length === maxPlayers — отсекает', async () => {
     playerRepo.findOne.mockResolvedValue({id: 'p1', gameRoom: null})
-    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, isGameStarted: false, players: [{id: 'a'}, {id: 'b'}]})
+    roomRepo.findOne.mockResolvedValue({id: 'room-x', maxPlayers: 2, players: [{id: 'a'}, {id: 'b'}]})
     await expect(new PlayerService().enterRoom('p1', 'room-x')).rejects.toBeInstanceOf(RoomFullError)
   })
 })

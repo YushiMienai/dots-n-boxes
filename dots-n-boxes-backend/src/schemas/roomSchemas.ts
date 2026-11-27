@@ -13,7 +13,7 @@ export const roomResponseSchema = z.object({
   name: z.string(),
   accessLevel: z.string(),
   maxPlayers: z.number(),
-  isGameStarted: z.boolean(),
+  boardSize: z.number(),
   currentPlayersCount: z.number(),
   createdAt: z.date().transform(date => date.toISOString())
 })
@@ -39,6 +39,9 @@ const roomBody = z.object({
     .min(2, 'Минимум 2 игрока')
     .max(4, 'Максимум 4 игрока')
     .default(2),
+  boardSize: z.number()
+    .refine((v) => v === 5 || v === 10, {message: 'Размер поля должен быть 5 или 10'})
+    .default(10),
   accessLevel: z.enum(EAccessLevel).default(EAccessLevel.PUBLIC),
   password: z.string().max(100).nullish()
 }).superRefine((data, ctx) => {
@@ -63,6 +66,7 @@ export const roomSchemas = {
     querystring: z.object({
       name: z.string().optional(),
       maxPlayers: z.number().min(2).max(4).optional(),
+      boardSize: z.number().optional(),
       accessLevel: z.string().optional()
     }),
     response: {

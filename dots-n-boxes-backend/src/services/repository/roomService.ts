@@ -3,10 +3,17 @@ import {RoomEntity} from '@entities'
 import {RoomNotFound} from '@errors'
 import {RoomRequest, RoomSearch} from '@schemas'
 
+/**
+ * Комната с посчитанным количеством игроков.
+ * Агрегат нужен для API (`roomResponseSchema.currentPlayersCount`),
+ * но НЕ хранится в БД и НЕ должен попадать в game-state.
+ */
+export type RoomWithCount = RoomEntity & {currentPlayersCount: number}
+
 export class RoomService {
   private roomRepository = AppDataSource.getRepository(RoomEntity)
 
-  async getList(params: RoomSearch): Promise<RoomEntity[]> {
+  async getList(params: RoomSearch): Promise<RoomWithCount[]> {
     const qb = this.roomRepository
       .createQueryBuilder('room')
       .leftJoin('room.players', 'player')
@@ -15,7 +22,7 @@ export class RoomService {
         'room.name',
         'room.accessLevel',
         'room.maxPlayers',
-        'room.isGameStarted',
+        'room.boardSize',
         'room.createdAt',
       ])
       .addSelect('COUNT(player.id)', 'currentPlayersCount')
@@ -34,11 +41,11 @@ export class RoomService {
     }))
   }
 
+  /**
+   * Для игровой логики (GameManager). НЕ содержит currentPlayersCount —
+   * это агрегат для API, в game-state ему не место.
+   */
   async getRoom(id: string): Promise<RoomEntity> {
-    // Без select: ROOM_SELECT — чтобы relations: {players: true}
-    // гарантированно вернул игроков (select фильтрует колонки
-    // связанной сущности в части версий TypeORM).
-    // password в сущности имеет select: false — не утечёт.
     const room = await this.roomRepository.findOne({
       where: [{id}],
       relations: {players: true}
@@ -51,12 +58,12 @@ export class RoomService {
     return room
   }
 
-  async createRoom(room: RoomRequest): Promise<RoomEntity> {
-    console.info(room)
-    return await this.roomRepository.save(room)
+  async createRoom(room: RoomRequest): Promise<RoomWithCount> {
+    const created = await this.roomRepository.save(room)
+    return {...created, currentPlayersCount: 0}
   }
 
-  async getRoomForEntry(id: string): Promise<RoomEntity> {
+  async getRoomWithPassword(id: string): Promise<RoomEntity> {
     const room = await this.roomRepository.findOne({
       where: {id},
       select: {
@@ -64,7 +71,7 @@ export class RoomService {
         name: true,
         accessLevel: true,
         maxPlayers: true,
-        isGameStarted: true,
+        boardSize: true,
         password: true
       },
     })

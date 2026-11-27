@@ -48,9 +48,6 @@ export class PlayerService {
   async leaveRoom(playerId: string): Promise<void> {
     await AppDataSource.transaction(async (manager) => {
       const playerRepo = manager.getRepository(PlayerEntity)
-      const roomRepo = manager.getRepository(RoomEntity)
-
-      // 1. Находим игрока с его комнатой
       const player = await playerRepo.findOne({
         where: {id: playerId},
         select: {gameRoomId: true}
@@ -60,29 +57,10 @@ export class PlayerService {
         return
       }
 
-      const roomId = player.gameRoomId
-
-      // 2. Убираем игрока из комнаты
       await playerRepo.update(playerId, {
         gameRoomId: null,
         gameRoom: null
       })
-
-      // 3. Смотрим, была ли игра начата
-      const room = await roomRepo.findOne({
-        where: {id: roomId},
-        select: {id: true, isGameStarted: true}
-      })
-
-      // 4. Сбрасываем состояние комнаты, если игра шла.
-      //    Явный выход игрока из идущей игры возвращает комнату
-      //    в WAITING — играть больше некому, линии обнуляются.
-      if (room?.isGameStarted) {
-        await roomRepo.update(roomId, {
-          isGameStarted: false,
-          isGameFinished: false
-        })
-      }
     })
   }
 

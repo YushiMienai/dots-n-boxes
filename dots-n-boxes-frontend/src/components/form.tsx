@@ -1,8 +1,6 @@
-import {ReactNode, createContext} from 'react'
+import {ReactNode} from 'react'
 import {Path, RegisterOptions, useForm, FieldValues, useFormContext, FormProvider} from 'react-hook-form'
 import {Loader} from './loader'
-
-const FormContext = createContext<FieldValues | null>(null)
 
 interface IFormProps<T> {
   children: ReactNode

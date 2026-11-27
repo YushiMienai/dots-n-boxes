@@ -1,7 +1,7 @@
 import {useMemo} from 'react'
 import {Stage, Layer, Line, Rect} from 'react-konva'
 import {IGameState, ILine, IPlayer} from '@types'
-import {BOARD_SIZE, CANVAS_PADDING, CANVAS_SIZE, CELL_SIZE, EMPTY_CELL, FREE_LINE} from '@config'
+import {BOARD_SIZE, CANVAS_PADDING, CELL_SIZE, EMPTY_CELL, FREE_LINE} from '@config'
 import {getPlayerColor} from '@utils'
 
 interface GameCanvasProps {
@@ -12,9 +12,12 @@ interface GameCanvasProps {
 }
 
 export const GameCanvas = ({gameState, onLineClick}: GameCanvasProps) => {
+  const boardSize = gameState.boardSize ?? BOARD_SIZE
+  const canvasSize = CELL_SIZE * boardSize
+
   const renderCells = useMemo(() => gameState.cells.map((cell, idx) => {
-    const row = Math.floor(idx / BOARD_SIZE)
-    const col = idx % BOARD_SIZE
+    const row = Math.floor(idx / boardSize)
+    const col = idx % boardSize
     const ownerColor = cell.ownerId ? getPlayerColor(cell.ownerId, gameState.players) : null
 
     return (
@@ -31,7 +34,7 @@ export const GameCanvas = ({gameState, onLineClick}: GameCanvasProps) => {
         listening={false}
       />
     )
-  }), [gameState.cells, gameState.players])
+  }), [gameState.cells, gameState.players, boardSize])
 
   const renderLines = (lines: ILine[], isHorizontal: boolean) => lines.map(({lineId, ownerId}) => {
     const [, a, b] = lineId.split('-')
@@ -69,7 +72,7 @@ export const GameCanvas = ({gameState, onLineClick}: GameCanvasProps) => {
   })
 
   return (
-    <Stage width={CANVAS_SIZE + CANVAS_PADDING * 2} height={CANVAS_SIZE + CANVAS_PADDING * 2}>
+    <Stage width={canvasSize + CANVAS_PADDING * 2} height={canvasSize + CANVAS_PADDING * 2}>
       <Layer x={CANVAS_PADDING} y={CANVAS_PADDING}>
         {renderCells}
         {renderLines(gameState.horizontalLines, true)}

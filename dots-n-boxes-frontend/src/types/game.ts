@@ -17,6 +17,7 @@ export interface IGameState {
   roomId: string
   roomName: string
   players: IPlayer[]
+  boardSize: number
   activePlayerIndex: number
   cells: ICell[]
   horizontalLines: ILine[]

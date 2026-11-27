@@ -7,7 +7,7 @@
 | POST | /refresh | Обновить accessToken |
 | POST | /logout | Отозвать refresh |
 | GET | /rooms | Список комнат |
-| POST | /rooms | Создать комнату |
+| POST | /rooms | Создать комнату (`name`, `maxPlayers` 2–4, `boardSize` 5 или 10, `accessLevel`, `password`) |
 | PUT | /player/room/:id | Войти в комнату (пароль) |
 | DELETE | /player/room | Выйти из комнаты |
 

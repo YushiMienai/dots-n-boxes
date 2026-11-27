@@ -30,6 +30,7 @@ export interface IGameState {
   roomName: string
   players: IGamePlayer[]
   maxPlayers: number
+  boardSize: number
   activePlayerIndex: number
   winnerId: string | null
   cells: ICell[]

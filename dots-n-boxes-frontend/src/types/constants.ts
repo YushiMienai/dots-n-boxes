@@ -8,3 +8,8 @@ export const ACCESS_OPTIONS: {value: EAccessLevel; label: string; hint: string}[
 ]
 
 export const PLAYER_COUNTS = [2, 3, 4]
+
+export const BOARD_SIZE_OPTIONS = [
+  {value: 5, label: '5×5'},
+  {value: 10, label: '10×10'}
+]

@@ -17,14 +17,11 @@ export class RoomEntity {
   @Column({type: 'int', default: 2})
   maxPlayers: number
 
+  @Column({type: 'int', default: 10})
+  boardSize: number
+
   @Column({type: 'text', default: 'public'})
   accessLevel: string
-
-  @Column({type: 'boolean', default: false})
-  isGameStarted: boolean
-
-  @Column({type: 'boolean', default: false})
-  isGameFinished: boolean
 
   @OneToMany(() => PlayerEntity, player => player.gameRoom)
   players: IPlayer[]

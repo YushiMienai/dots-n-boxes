@@ -25,8 +25,8 @@ export async function roomRoutes(fastify: FastifyInstance) {
   fastify.get<{Params: {id: string}}>('/rooms/:id',
     {preHandler: validate(roomSchemas.getOne.params, 'params')},
     async (request): Promise<RoomResponse> => {
-      const room: RoomEntity = await roomService.getRoom(request.params.id)
-      return roomResponseSchema.parse(room)
+      const room = await roomService.getRoom(request.params.id)
+      return roomResponseSchema.parse({...room, currentPlayersCount: room.players?.length ?? 0})
     })
 
   fastify.post<{Body: RoomRequest, Reply: RoomResponse}>(
